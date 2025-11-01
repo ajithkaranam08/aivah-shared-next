@@ -1,13 +1,13 @@
 import { cn } from '@/lib/utils';
 import React from 'react'
 import { TooltipInput } from '../input/tooltip';
-import { CopyCheck, CopyIcon } from 'lucide-react';
+import { Check, CopyCheck, CopyIcon } from 'lucide-react';
 import { useCopyToClipboard } from '@/hooks/use-copy-clipboard';
 import { formatChatTimestamp } from '@/helper/date-time';
 
 interface ChatBubbleProps {
     message: string;
-    sender: 'user' | 'bot';
+    sender: 'user' | 'ai';
     timestamp: string | Date;
 }
 
@@ -19,7 +19,7 @@ const ChatBubble = ({ message, sender, timestamp }: ChatBubbleProps) => {
             <div className={cn('max-w-[80%] flex flex-col gap-1', sender === 'user' ? 'items-end' : 'items-start')}>
                 <section className={cn(`p-4 rounded-tl-3xl  rounded-tr-3xl`, {
                     'bg-[#303030] dark:bg-foreground text-background self-end rounded-bl-3xl': sender === 'user',
-                    'bg-slate-100 text-black dark:bg-secondary dark:text-white self-start rounded-br-3xl': sender === 'bot',
+                    'bg-slate-100 text-black dark:bg-secondary dark:text-white self-start rounded-br-3xl': sender === 'ai',
                 })}>
                     {message}
                 </section>
@@ -27,7 +27,7 @@ const ChatBubble = ({ message, sender, timestamp }: ChatBubbleProps) => {
                 <section className={cn('flex gap-2 items-center', sender === 'user' ? 'flex' : 'flex-row-reverse')}>
                     <span className="text-xs text-muted-foreground">{formattedTime}</span>
                     <TooltipInput tooltipText={copiedKey ? "Copied!" : "Copy"} variant="ghost" onClick={() => copy(message)}>
-                        {copiedKey ? <CopyCheck size={18} /> : <CopyIcon size={18} />}
+                        {copiedKey ? <Check size={18} /> : <CopyIcon size={18} />}
                     </TooltipInput>
                 </section>
 
