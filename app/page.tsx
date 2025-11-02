@@ -45,7 +45,7 @@ export default function Home() {
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button asChild className="px-6">
-                  <Link href="#features">Get started</Link>
+                  <Link href="https://aivah.com">Get started</Link>
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -73,7 +73,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-16 md:py-24 container md:px-24 px-5">
+      <section id="features" className="py-16 md:py-24 container mx-auto md:px-24 px-5">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Everything you need to ship fast</h2>
           <p className="mt-3 text-muted-foreground">Modern building blocks for real‑time, multimodal AI experiences.</p>

@@ -14,13 +14,14 @@ export const formSchema = z.object({
 })
 
 const ChatInput = ({ className }: { className?: string }) => {
+
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             text: '',
         },
     })
-
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         console.log(data)
@@ -54,8 +55,6 @@ const ChatInput = ({ className }: { className?: string }) => {
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </form>
         </FormProvider>

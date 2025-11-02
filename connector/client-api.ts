@@ -1,6 +1,6 @@
 
 import envConfig from "@/config/env";
-import { SESSION_STORAGE } from "@/helper/storage";
+import { SESSION_TOKEN } from "@/helper/storage";
 import { toast } from "sonner";
 
 
@@ -12,7 +12,7 @@ async function connect<T = any>(
     endpoint: string,
     options: ConnectOptions = {}
 ): Promise<T> {
-    const token = typeof window !== "undefined" ? SESSION_STORAGE.get() : null;
+    const token = typeof window !== "undefined" ? SESSION_TOKEN.get() : null;
 
     try {
         const res = await fetch(`${envConfig.NEXT_PUBLIC_API_URL}${endpoint}`, {
