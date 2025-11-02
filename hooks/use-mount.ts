@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 function useMount() {
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
-        setIsMounted(true);
+        const id = setTimeout(() => setIsMounted(true), 0);
+        return () => clearTimeout(id);
     }, []);
 
     return isMounted;

@@ -28,11 +28,8 @@ import {
 } from '@/helper/wawa-lipsync-manager';
 import { useCompanionStore } from '@/store/companion';
 import { useLipsyncStore } from '@/store/lipsync';
+import { DEBUG_MODE , ROTATION_SPEED, FADE_DURATION, MOVEMENT_SPEED} from '@/constants/avatar/config';
 
-const DEBUG_MODE = window.location.href.includes('debug');
-const FADE_DURATION = 0.5;
-const MOVEMENT_SPEED = 0.022;
-const ROTATION_SPEED = 0.1;
 const cameraDirection = new THREE.Vector3();
 const targetQuaternion = new THREE.Quaternion();
 const avatarPositionVec3 = new THREE.Vector3();
@@ -59,12 +56,19 @@ function Avatar({
     const { position, setPosition, isWalking, currentAnimation, currentFacialExpression, setCurrentAnimation, setCurrentFacialExpression, setWalking } = useAvatarStore();
     const { isAudioPlaying, muteAvatar, stopGeneration, configureConversation, setAudioPlaying, setAudioStopped } = useCompanionStore();
     const { lipsyncData } = useLipsyncStore();
+
+    const { nodes, scene } = useGLTF(modelUrl);
+    const { nodes: nodesMorphTargets } = useGLTF(
+        '/models/BaseModelOptimized.glb'
+    );
+    const [blink, setBlink] = useState(false);
+    const hips = nodes.Hips;
+    const { camera } = useThree();
+
     const setAvatarPosition = setPosition;
     const avatarPosition = position;
 
-
     const storeStopGeneration = stopGeneration;
-
 
 
     const defaultSetting = {
@@ -81,16 +85,10 @@ function Avatar({
     const { morphTargetSmoothing, winkSmoothing } = defaultSetting;
 
     const audio = currentMessage?.audio;
-    const [facialExpression, setFacialExpression] = useState('Neutral');
-    const [animation, setAnimation] = useState('Idle0');
 
     // Use Redux state for animation and facial expression
-    const finalAnimation = currentAnimation || animation;
-    const finalFacialExpression = currentFacialExpression || facialExpression;
-    const { nodes, scene } = useGLTF(modelUrl);
-    const { nodes: nodesMorphTargets } = useGLTF(
-        '/models/BaseModelOptimized.glb'
-    );
+
+
     // Loading animations with enhanced categorization
     const {
         actions,
@@ -167,7 +165,6 @@ function Avatar({
             // Clean up any local state
             resetMorphTargets();
             const idleAnimation = 'Idle' + randInt(0, idleAnimations.length - 1);
-            setAnimation(idleAnimation);
             setCurrentAnimation(idleAnimation);
         }
     }, [storeStopGeneration]);
@@ -181,7 +178,6 @@ function Avatar({
             // Clean up any local state
             resetMorphTargets();
             const idleAnimation = 'Idle' + randInt(0, idleAnimations.length - 1);
-            setAnimation(idleAnimation);
             setCurrentAnimation(idleAnimation)
         }
     }, [configureConversation]);
@@ -270,30 +266,24 @@ function Avatar({
         if (isLipsyncActive) {
             // LIPSYNC MODE: Set a single talking animation and let lipsync handle mouth
             const talkingAnim = talkingAnimations[randInt(0, talkingAnimations.length - 1)];
-            setAnimation(talkingAnim.name);
             setCurrentAnimation(talkingAnim.name);
 
             // Set a neutral expression to not conflict with lipsync
-            setFacialExpression('Focused');
             setCurrentFacialExpression('Focused');
         } else if (isWalking) {
             // WALKING MODE
-            setAnimation('Walk');
             setCurrentAnimation('Walk');
-            setFacialExpression('Neutral');
             setCurrentFacialExpression('Neutral');
         } else {
             // IDLE MODE
             resetMorphTargets(); // Clean morphs for idle
             const idleAnim = idleAnimations[randInt(0, idleAnimations.length - 1)];
-            setAnimation(idleAnim.name);
             setCurrentAnimation(idleAnim.name);
-            setFacialExpression('Neutral');
             setCurrentFacialExpression('Neutral');
         }
 
         // NO INTERVALS OR TIMEOUTS - Let animations play naturally
-    }, [lipsyncData?.isActive, isAudioPlaying, isWalking]); // Minimal dependencies
+    }, [lipsyncData?.isActive, isAudioPlaying, isWalking]);
 
     // DISABLED: Animation updates from websocket - handled by unified controller
     // This prevents conflicts with the main animation system
@@ -330,7 +320,7 @@ function Avatar({
                     if (key === 'eyeBlinkLeft' || key === 'eyeBlinkRight') {
                         return; // eyes wink/blink are handled separately
                     }
-                    const mapping = facialExpressions[finalFacialExpression];
+                    const mapping = facialExpressions[currentFacialExpression];
                     if (mapping?.[key]) {
                         lerpMorphTarget(key, mapping[key], 0.1);
                     } else {
@@ -380,22 +370,22 @@ function Avatar({
         if (DEBUG_MODE) {
             return;
         }
-        if (actions[finalAnimation]) {
+        if (actions[currentAnimation]) {
             // Wolf3D-style animation transitions with mixer state awareness
-            const mixer = actions[finalAnimation].getMixer();
+            const mixer = actions[currentAnimation].getMixer();
             const fadeInDuration = isInit.current ? FADE_DURATION : 0;
             // Enhanced animation setup inspired by Wolf3D demo
-            actions[finalAnimation]
+            actions[currentAnimation]
                 ?.reset()
                 .fadeIn(mixer.stats.actions.inUse === 0 ? 0 : fadeInDuration)
                 .play();
             isInit.current = true;
             return () => {
                 // Wolf3D-style fadeOut with proper cleanup
-                actions[finalAnimation]?.fadeOut(FADE_DURATION);
+                actions[currentAnimation]?.fadeOut(FADE_DURATION);
             };
         }
-    }, [finalAnimation]);
+    }, [actions, currentAnimation]);
 
     useEffect(() => {
         if (audio) {
@@ -442,9 +432,7 @@ function Avatar({
         };
     }, []);
 
-    const [blink, setBlink] = useState(false);
-    const hips = nodes.Hips;
-    const { camera } = useThree();
+
 
     useEffect(() => {
         if (!nodes.Wolf3D_Avatar) {
@@ -493,6 +481,7 @@ function Avatar({
             )
             .normalize();
     }, [avatarPosition]);
+
 
     function handleAvatarPosition() {
         if (!group?.current) return;
@@ -547,7 +536,6 @@ function Avatar({
 
     useEffect(() => {
         const walkAnimation = isWalking ? 'Walk' : 'Idle0';
-        setAnimation(walkAnimation);
         setCurrentAnimation(walkAnimation);
     }, [isWalking]);
 
@@ -566,7 +554,7 @@ function Avatar({
         }
     }, [activeSceneName]);
 
-    function resetMorphTargets() {
+function resetMorphTargets() {
         const traditionalTargets = [
             'mouthOpen', 'jawOpen', 'teethOpen', 'mouthClose', 'jawClose',
             'mouthSmileLeft', 'mouthSmileRight', 'cheekSquintLeft', 'cheekSquintRight'

@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  allowedDevOrigins: ["*"]
+  allowedDevOrigins: ["*"],
+  typedRoutes: true,
 };
 
 export default nextConfig;

@@ -31,6 +31,8 @@ const CompanionEmbedId = () => {
 
   useEffect(() => {
 
+    console.log({data});
+
     if (typeof window !== "undefined") {
       SESSION_TOKEN.set(data.details.token)
     }
@@ -59,7 +61,7 @@ const CompanionEmbedId = () => {
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
-        <Chat chatBotId={data.details.chatbotId} />
+        <Chat  />
       </ResizablePanel>
     </ResizablePanelGroup>
   </div>

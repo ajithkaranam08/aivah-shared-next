@@ -13,7 +13,7 @@ export const formSchema = z.object({
     text: z.string().min(1, "Message is required"),
 })
 
-const ChatInput = ({ className }: { className?: string }) => {
+const ChatInput = ({ className, onSend }: { className?: string, onSend?: (text: string) => void }) => {
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -24,7 +24,7 @@ const ChatInput = ({ className }: { className?: string }) => {
     })
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
-        console.log(data)
+        onSend?.(data.text.trim())
         form.reset()
     }
 

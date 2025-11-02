@@ -27,3 +27,18 @@ export const SESSION_CONVERSATION_ID = {
         sessionStorage.removeItem("session_conversation_id");
     },
 }
+
+export const SESSION_ID = {
+    get: () => {
+        if (typeof window === "undefined") return null;
+        return sessionStorage.getItem("session_id");
+    },
+    set: (id: string) => {
+        if (typeof window === "undefined") return;
+        sessionStorage.setItem("session_id", id);
+    },
+    clear: () => {
+        if (typeof window === "undefined") return;
+        sessionStorage.removeItem("session_id");
+    },
+}

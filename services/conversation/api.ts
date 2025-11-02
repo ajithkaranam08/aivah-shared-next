@@ -9,8 +9,15 @@ export interface ConversationApiProps {
     }
 }
 
+
+export interface ConversationApiResponse {
+    conversationId: number;
+    message: string;
+    userSessionId: number;
+}
+
 const conversationAPi = {
-    create: (body: ConversationApiProps["create"], options?: ConnectOptions) => apiFetch.post(`embed-share/conversation`, body, options)
+    create: (body: ConversationApiProps["create"], options?: ConnectOptions) => apiFetch.post<ConversationApiResponse>(`embed-share/conversation`, body, options)
 }
 
 export default conversationAPi
