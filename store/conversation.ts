@@ -1,12 +1,24 @@
 import { DataReceivedProps } from "@/services/conversation/query";
 import { create } from "zustand";
 
+
 interface ConversationStore {
   greeding: DataReceivedProps;
   setGreeting: (greeding: DataReceivedProps) => void;
 
   transcription: string[];
   setTranscription: (transcription: string) => void;
+
+  messages: {
+    content: string;
+    sender: 'user' | 'bot';
+    timestamp: string | Date;
+  }[];
+  setMesages: (messages: {
+    content: string;
+    sender: 'user' | 'bot';
+    timestamp: string | Date;
+  }[]) => void;
 }
 
 const useConversationStore = create<ConversationStore>((set, get) => ({
@@ -18,10 +30,12 @@ const useConversationStore = create<ConversationStore>((set, get) => ({
   setGreeting: (greeding) => set({ greeding }),
 
   transcription: [],
-  setTranscription: (transcription) => {
-    const text = get().transcription;
-    set({ transcription: [...text, transcription] });
+  setTranscription: (words) => {
+    set({ transcription: [words] });
   },
+
+  messages: [],
+  setMesages: (messages) => set({ messages }),
 }));
 
 export default useConversationStore;
