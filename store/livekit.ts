@@ -22,7 +22,6 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
   error: null,
 
   connect: async (data) => {
-
     if (!data?.details) {
       toast.error("Invalid embed ID or validation missing");
       return;
@@ -47,11 +46,14 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
       set({ room: connection.room, isConnecting: false });
       toast.success("✅ Connected to LiveKit");
 
+      connection.room.on("connected", () => {
+        toast.success("✅ Connected to LiveKit");
+      });
+
       connection.room.on("disconnected", () => {
         toast.info("Disconnected from LiveKit");
         set({ room: null });
       });
-
     } catch (err) {
       set({ isConnecting: false, error: (err as Error).message });
       toast.error(`LiveKit connection failed: ${(err as Error).message}`);

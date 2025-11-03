@@ -2,7 +2,6 @@
 
 import Experience from "@/components/experience"
 import ChatBubble from "@/components/chat/bubble"
-import ChatInput from "@/components/chat/input"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -31,7 +30,7 @@ const CompanionEmbedId = () => {
 
   useEffect(() => {
 
-    console.log({data});
+    console.log({ data });
 
     if (typeof window !== "undefined") {
       SESSION_TOKEN.set(data.details.token)
@@ -56,12 +55,12 @@ const CompanionEmbedId = () => {
     >
       <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
         <div className="flex h-full items-center justify-center p-6">
-          <Experience modelUrl={data.details?.avatarUrl} chatId={data.details?.chatbotId} companionType={data.details?.avatarType} />
+          {/* <Experience modelUrl={data.details?.avatarUrl} chatId={data.details?.chatbotId} companionType={data.details?.avatarType} /> */}
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
-        <Chat  />
+        <Chat />
       </ResizablePanel>
     </ResizablePanelGroup>
   </div>

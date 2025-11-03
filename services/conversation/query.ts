@@ -1,14 +1,24 @@
-import { SESSION_CONVERSATION_ID } from '@/helper/storage'
-import { useConversationMutation } from './mutation'
+import { LivekitConnectionResult } from "@/@type/livekit";
+import { useEffect } from "react";
+import { RoomEvent } from "livekit-client";
 
 export const conversationKeys = {
-    create: (id: string) => ['conversation', id] as const,
-}
+  create: (id: string) => ["conversation", id] as const,
+};
 
-export const useConversation = async () => {
-    const { mutate } = useConversationMutation();
-    const conversationId = SESSION_CONVERSATION_ID.get();
+export const useLiveKitChatGreeting = (
+  room: LivekitConnectionResult["room"] | null
+) => {
+  useEffect(() => {
+    if (!room) return;
+    const handleDataReceived = (data: Uint8Array<ArrayBufferLike>) => {
+      console.log(data, "aaaa");
+    };
 
-}
+    room.on(RoomEvent.DataReceived, handleDataReceived);
 
-
+    return () => {
+      room.off(RoomEvent.DataReceived, handleDataReceived);
+    };
+  }, [room]);
+};
