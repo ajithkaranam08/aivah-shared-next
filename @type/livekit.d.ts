@@ -17,7 +17,7 @@ export interface LivekitResponse {
 }
 
 export interface LivekitConnectionResult {
-  room: RoomEvent;
+  room: Room;
   url: string;
   token: string;
 }

@@ -14,6 +14,10 @@ interface LivekitState {
   connect: (data: ChatbotDetails) => Promise<void>;
   disconnect: () => void;
   reset: () => void;
+  config: {
+    token: string;
+    url: string;
+  };
 }
 
 // Zustand store definition
@@ -21,6 +25,10 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
   room: null,
   isConnecting: false,
   error: null,
+  config: {
+    token: "",
+    url: "",
+  },
 
   connect: async (data) => {
     if (!data?.details) {
@@ -45,16 +53,24 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
       });
 
       connection.room.on(RoomEvent.Connected, () => {
-        set({ room: connection.room, isConnecting: false });
+        set({
+          room: connection.room,
+          isConnecting: false,
+          config: { token: connection.token, url: connection.url },
+        });
         toast.success("✅ Connected to LiveKit");
       });
 
       connection.room.on(RoomEvent.Disconnected, () => {
-        set({ room: null, isConnecting: false });
+        set({
+          room: null,
+          isConnecting: false,
+          config: { token: "", url: "" },
+        });
         toast.info("Disconnected from LiveKit");
       });
 
-      connection.room.connect(connection.url, connection.token);
+      await connection.room.connect(connection.url, connection.token);
     } catch (err) {
       set({ isConnecting: false, error: (err as Error).message });
       toast.error(`LiveKit connection failed: ${(err as Error).message}`);
@@ -65,12 +81,17 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
     const { room } = get();
     if (room) {
       room.disconnect();
-      set({ room: null });
+      set({ room: null, config: { token: "", url: "" } });
       toast.info("LiveKit room disconnected");
     }
   },
 
   reset: () => {
-    set({ room: null, isConnecting: false, error: null });
+    set({
+      room: null,
+      isConnecting: false,
+      error: null,
+      config: { token: "", url: "" },
+    });
   },
 }));

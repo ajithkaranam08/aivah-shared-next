@@ -13,7 +13,7 @@ export const conversationKeys = {
   create: (id: string) => ["conversation", id] as const,
 };
 
-export const useLiveKitChatGreeting = (
+export const useChatInitListener = (
   room: LivekitConnectionResult["room"] | null
 ) => {
   const { setGreeting } = useConversationStore();
@@ -26,7 +26,7 @@ export const useLiveKitChatGreeting = (
 
   useEffect(() => {
     if (!room) return;
-    const handleReceive = (data: Uint16Array<ArrayBufferLike>) => {
+    const handleReceive = (data: Uint8Array<ArrayBufferLike>) => {
       const textDecoder = new TextDecoder();
       const dataString = textDecoder.decode(data);
       const jsonData = JSON.parse(dataString) as DataReceivedProps;
@@ -41,7 +41,7 @@ export const useLiveKitChatGreeting = (
   }, [room]);
 };
 
-export const useLiveKitTranscription = (
+export const useChatTranscription = (
   room: LivekitConnectionResult["room"] | null
 ) => {
   const { setTranscription } = useConversationStore();
@@ -54,7 +54,8 @@ export const useLiveKitTranscription = (
   useEffect(() => {
     if (!room) return;
     const handleReceive = (transcription: TranscriptionSegment[]) => {
-      console.log({ transcription });
+      const text = transcription.map((segment) => segment.text).join(" ");
+      handleEvent().setTranscription(text);
     };
 
     room.on(RoomEvent.TranscriptionReceived, handleReceive);

@@ -5,11 +5,13 @@ import { useConversationMutation } from '@/services/conversation/mutation'
 import { useLivekitStore } from '@/store/livekit'
 import { useValidateUUID } from '@/services/validate/query'
 import { useParams } from 'next/navigation'
-import { useLiveKitChatGreeting } from '@/services/conversation/query'
-import GreedingChat from './greeding'
+import { useChatTranscription } from '@/services/conversation/query'
+import ChatInitWithCredit from './chatInit-with-credit'
+import GenerateChat from './generate-chat'
 const Chat = () => {
     const { connect, room, disconnect } = useLivekitStore();
-    useLiveKitChatGreeting(room)
+
+
 
     const { embedId } = useParams();
     const { data } = useValidateUUID(String(embedId))
@@ -40,7 +42,9 @@ const Chat = () => {
     return (
         <div className='flex p-5 flex-col h-full justify-end gap-2'>
 
-            <GreedingChat />
+            <ChatInitWithCredit room={room} />
+
+            <GenerateChat room={room} />
 
             <ChatBubble timestamp={new Date()} message="Hello! How can I assist you today? asdsafsfs aefsdfgsdfafa faw fasf afadafa adafadfsad faf af" sender="bot" />
             <ChatBubble timestamp={new Date()} message="Hello! How can asdsfsefa f afaedfsdf sedgfesdgsdg sdgsdg sgag sdgs gsg sgsgsgs gsgsdgsdg sgsdgs dgdssgsg" sender="user" />
