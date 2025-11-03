@@ -29,14 +29,10 @@ const CompanionEmbedId = () => {
   const { data } = useValidateUUID(String(embedId));
 
   useEffect(() => {
-
-    console.log({ data });
-
     if (typeof window !== "undefined") {
       SESSION_TOKEN.set(data.details.token)
     }
-
-  }, [data.details.token])
+  }, [data])
 
 
   const isTablet = width <= 768;

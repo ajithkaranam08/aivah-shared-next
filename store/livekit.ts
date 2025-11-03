@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { LivekitConnectionResult } from "@/@type/livekit";
 import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
 import { ChatbotDetails } from "@/@type/validation";
+import { RoomEvent } from "livekit-client";
 
 // Define Zustand store type
 interface LivekitState {
@@ -43,15 +44,17 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
         sessionId,
       });
 
-      connection.room.on("connected", () => {
+      connection.room.on(RoomEvent.Connected, () => {
         set({ room: connection.room, isConnecting: false });
         toast.success("✅ Connected to LiveKit");
       });
 
-      connection.room.on("disconnected", () => {
+      connection.room.on(RoomEvent.Disconnected, () => {
         set({ room: null, isConnecting: false });
         toast.info("Disconnected from LiveKit");
       });
+
+      connection.room.connect(connection.url, connection.token);
     } catch (err) {
       set({ isConnecting: false, error: (err as Error).message });
       toast.error(`LiveKit connection failed: ${(err as Error).message}`);

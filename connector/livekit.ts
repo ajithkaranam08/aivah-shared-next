@@ -68,7 +68,5 @@ export const connectToLiveKit = async ({
     console.warn("Pre-warm connection failed:", e);
   }
 
-
-
   return { room, url: data.url, token: data.token };
 };
