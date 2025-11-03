@@ -1,6 +1,6 @@
 import { LivekitConnectionResult } from "@/@type/livekit";
 import { useEffect, useEffectEvent } from "react";
-import { RoomEvent } from "livekit-client";
+import { RoomEvent, TranscriptionSegment } from "livekit-client";
 import useConversationStore from "@/store/conversation";
 
 export interface DataReceivedProps {
@@ -26,17 +26,41 @@ export const useLiveKitChatGreeting = (
 
   useEffect(() => {
     if (!room) return;
-    const handleDataReceived = (data: Uint16Array<ArrayBufferLike>) => {
+    const handleReceive = (data: Uint16Array<ArrayBufferLike>) => {
       const textDecoder = new TextDecoder();
       const dataString = textDecoder.decode(data);
       const jsonData = JSON.parse(dataString) as DataReceivedProps;
       handleEvent().setGreeting(jsonData);
     };
 
-    room.on(RoomEvent.DataReceived, handleDataReceived);
+    room.on(RoomEvent.DataReceived, handleReceive);
 
     return () => {
-      room.off(RoomEvent.DataReceived, handleDataReceived);
+      room.off(RoomEvent.DataReceived, handleReceive);
+    };
+  }, [room]);
+};
+
+export const useLiveKitTranscription = (
+  room: LivekitConnectionResult["room"] | null
+) => {
+  const { setTranscription } = useConversationStore();
+  const handleEvent = useEffectEvent(() => {
+    return {
+      setTranscription,
+    };
+  });
+
+  useEffect(() => {
+    if (!room) return;
+    const handleReceive = (transcription: TranscriptionSegment[]) => {
+      console.log({ transcription });
+    };
+
+    room.on(RoomEvent.TranscriptionReceived, handleReceive);
+
+    return () => {
+      room.off(RoomEvent.TranscriptionReceived, handleReceive);
     };
   }, [room]);
 };
