@@ -1,7 +1,6 @@
 import useConversationStore from "@/store/conversation";
 import { useChatTranscription } from "@/services/conversation/query";
 import { Room } from "livekit-client";
-import { FlipWords } from "../ui/flip-words";
 
 const GenerateGreedingText = ({ room }: { room: Room | null }) => {
   const { transcription } = useConversationStore();
@@ -16,7 +15,7 @@ const GenerateGreedingText = ({ room }: { room: Room | null }) => {
             "p-4 rounded-tl-3xl  rounded-tr-3xl bg-slate-100 text-black dark:bg-secondary dark:text-white self-start rounded-br-3xl"
           }
         >
-          <FlipWords words={transcription} duration={1000} />
+          {transcription}
         </section>
       </div>
     </div>

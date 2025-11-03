@@ -5,9 +5,9 @@ import { useChatInitListener } from '@/services/conversation/query';
 import { Room } from 'livekit-client';
 
 const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
-    useChatInitListener(room);
     const { greeding } = useConversationStore()
-    return <LoaderFive text={greeding.message} />;
+    useChatInitListener(room);
+    return greeding.message ? <LoaderFive text={greeding.message} /> : null;
 }
 
 export default ChatInitWithCredit

@@ -7,13 +7,15 @@ import { useParams } from "next/navigation";
 import ChatInitWithCredit from "./chatInit-with-credit";
 import GenerateChat from "./generate-chat";
 import { useAudioTrack } from "@/services/conversation/query";
+import useConversationStore from "@/store/conversation";
+import ChatBubble from "./bubble";
 
 const Chat = () => {
   const { connect, room, disconnect } = useLivekitStore();
   const { embedId } = useParams();
   const { data } = useValidateUUID(String(embedId));
   const { mutate } = useConversationMutation();
-  const audioPlaybackRef = useRef<HTMLDivElement>(null);
+  const {messages} = useConversationStore();
 
   useAudioTrack(room);
 
@@ -23,14 +25,30 @@ const Chat = () => {
     return () => disconnect();
   }, [data]);
 
+
+
+
+  useEffect(() => {
+  if (!room || room.state !== "connected") return
+
+    const startAudioSafely = async () => {
+      await room.startAudio()
+    }
+
+    startAudioSafely()
+  }, [room])
+
+
   return (
     <div className="flex p-5 flex-col h-full justify-end gap-2">
       <ChatInitWithCredit room={room} />
       <GenerateChat room={room} />
+      {messages.map(((msg) => (
+        <ChatBubble key={String(msg.timestamp)} {...msg}/>
+      )))}
       <ChatInput />
 
-      {/* Hidden mount point for LiveKit audio */}
-      <div ref={audioPlaybackRef} className="hidden" />
+
     </div>
   );
 };

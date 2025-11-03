@@ -6,7 +6,7 @@ interface ConversationStore {
   greeding: DataReceivedProps;
   setGreeting: (greeding: DataReceivedProps) => void;
 
-  transcription: string[];
+  transcription: string;
   setTranscription: (transcription: string) => void;
 
   messages: {
@@ -18,7 +18,7 @@ interface ConversationStore {
     content: string;
     sender: 'user' | 'bot';
     timestamp: string | Date;
-  }[]) => void;
+  }) => void;
 }
 
 const useConversationStore = create<ConversationStore>((set, get) => ({
@@ -29,13 +29,13 @@ const useConversationStore = create<ConversationStore>((set, get) => ({
   },
   setGreeting: (greeding) => set({ greeding }),
 
-  transcription: [],
+  transcription: "",
   setTranscription: (words) => {
-    set({ transcription: [words] });
+    set({ transcription: words });
   },
 
   messages: [],
-  setMesages: (messages) => set({ messages }),
+  setMesages: (newMessages) => set({ messages: [...get().messages, newMessages] }),
 }));
 
 export default useConversationStore;
