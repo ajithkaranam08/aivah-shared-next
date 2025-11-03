@@ -43,16 +43,14 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
         sessionId,
       });
 
-      set({ room: connection.room, isConnecting: false });
-      toast.success("✅ Connected to LiveKit");
-
       connection.room.on("connected", () => {
+        set({ room: connection.room, isConnecting: false });
         toast.success("✅ Connected to LiveKit");
       });
 
       connection.room.on("disconnected", () => {
+        set({ room: null, isConnecting: false });
         toast.info("Disconnected from LiveKit");
-        set({ room: null });
       });
     } catch (err) {
       set({ isConnecting: false, error: (err as Error).message });
