@@ -99,7 +99,7 @@ export const useChatTranscription = (room: HookRoom) => {
         handleEvent().setTranscription("");
         handleEvent().setLoadingType("NONE");
       } else {
-        handleEvent().setLoadingType("GREEDING");
+        handleEvent().setLoadingType("GREETING");
         const text = transcription.map((segment) => segment.text).join(" ");
         handleEvent().setTranscription(text);
       }
@@ -130,6 +130,16 @@ export const useAudioTrack = (room?: HookRoom) => {
   });
   useEffect(() => {
     if (!room) return;
+
+    const startAudioSafely = async () => {
+      try {
+        await room.startAudio();
+      } catch (err) {
+        console.error("Failed to start audio:", err);
+      }
+    };
+
+    startAudioSafely();
 
     const handleTrackSubscribed = (track: RemoteTrack) => {
       if (track.kind === Track.Kind.Audio) {

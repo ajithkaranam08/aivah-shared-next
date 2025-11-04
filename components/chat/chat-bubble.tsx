@@ -17,7 +17,7 @@ const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
     return (
         <div className={cn('flex w-full group', sender === 'user' ? 'justify-end' : 'justify-start')}>
             <div className={cn('max-w-[80%] flex flex-col gap-1', sender === 'user' ? 'items-end' : 'items-start')}>
-                <section className={cn(`p-4 rounded-tl-3xl  rounded-tr-3xl`, {
+                <section className={cn(`p-4 rounded-tl-3xl  rounded-tr-3xl max-w-full`, {
                     'bg-[#303030] dark:bg-foreground text-background self-end rounded-bl-3xl': sender === 'user',
                     'bg-slate-100 text-black dark:bg-secondary dark:text-white self-start rounded-br-3xl': sender === 'bot',
                 })}>

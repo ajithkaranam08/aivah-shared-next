@@ -12,8 +12,8 @@ interface ConversationStore {
   messages: ChatMessage[];
   setMessages: (messages: ChatMessage | ChatMessage[]) => void;
 
-  loadingType: "INIT" | "GREEDING" | "GENERATING" | "NONE";
-  setLoadingType: (type: "INIT" | "GREEDING" | "GENERATING" | "NONE") => void;
+  loadingType: "INIT" | "GREETING" | "GENERATING" | "NONE";
+  setLoadingType: (type: "INIT" | "GREETING" | "GENERATING" | "NONE") => void;
 }
 
 const useConversationStore = create<ConversationStore>((set, get) => ({

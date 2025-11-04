@@ -20,3 +20,14 @@ export interface ChatResponse {
   dateTime: string;
   isLike: number;
 }
+
+export interface ChatRequest {
+  chatId: number;
+  chat: string;
+  customerId: number;
+  userSessionId: number;
+  isAttended: number;
+  dateTime: string;
+  isLike: number;
+  chatType?: "normal" | "websearch" | "vision" | "smalltalk" | "realtime";
+}

@@ -3,6 +3,9 @@ import { Controller, useFormContext } from "react-hook-form";
 import { ChatFormType } from "@/zod-schema/chat";
 import { checkExpansion, createTag, placeCaretAtEnd } from "@/helper/chat";
 import { ChatInputExpandTypes } from "@/types/chat";
+import { useCreateChatMutation } from "@/services/conversation/mutation";
+import { useLivekitStore } from "@/store/livekit";
+
 
 
 const EditorInput = ({
@@ -12,6 +15,9 @@ const EditorInput = ({
 }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const form = useFormContext<ChatFormType>();
+    const { room } = useLivekitStore();
+
+    const { mutateAsync } = useCreateChatMutation(room);
 
     const handleInput = (
         e: React.FormEvent<HTMLDivElement>,
@@ -35,7 +41,7 @@ const EditorInput = ({
             placeholder.removeAttribute("data-placeholder");
         }
 
-        onChange(text);
+        onChange(editorRef.current?.textContent ?? "");
         checkExpansion(editorRef.current, onExpand);
     };
 
@@ -67,12 +73,19 @@ const EditorInput = ({
             const text = div.textContent?.trim();
             if (!text) return;
 
-            form.handleSubmit((data) => {
-
+            form.handleSubmit(async (data) => {
+                await mutateAsync({
+                    content: data.text,
+                    id: String(Date.now()),
+                    sender: "user",
+                    timestamp: new Date().toISOString()
+                })
                 form.reset();
-                if (editorRef.current)
+                if (editorRef.current) {
                     editorRef.current.innerHTML =
                         '<p data-placeholder="Ask anything" class="place-holder"></p>';
+                }
+
             })();
         }
     };

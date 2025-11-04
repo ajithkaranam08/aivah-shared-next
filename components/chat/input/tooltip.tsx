@@ -19,7 +19,7 @@ export function TooltipInput({ tooltipText, children, variant, onClick, classNam
     return (
         <Tooltip>
             <TooltipTrigger asChild>
-                <Button size={'icon'} variant={variant} className={cn('rounded-full cursor-pointer', className)} onClick={onClick}>
+                <Button size={'icon'} type="button" variant={variant} className={cn('rounded-full cursor-pointer', className)} onClick={onClick}>
                     {children}
                 </Button>
             </TooltipTrigger>

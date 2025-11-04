@@ -4,9 +4,10 @@ import { ipAddress } from "@/lib/utils";
 import { v4 as uuidV4 } from "uuid";
 import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
 import { useCompanionStore } from "@/store/companion";
-import { ChatMessage } from "@/types/chat";
+import { ChatMessage, ChatRequest } from "@/types/chat";
 import { ApiResponseWithChat } from "@/types/response";
 import useConversationStore from "@/store/conversation";
+import { Room } from "livekit-client";
 
 type Conversation = {
   conversationId: number;
@@ -71,6 +72,26 @@ export const useGetChatsMutation = () => {
         timestamp: new Date(msg.dateTime),
       }));
       setMessages(messages);
+    },
+  });
+};
+
+export const useCreateChatMutation = (room: Room | null) => {
+  const { setMessages } = useConversationStore();
+  return useMutation<unknown, Error, ChatMessage>({
+    mutationFn: async (body) => {
+      if (room) {
+        room?.localParticipant.sendText(body.content, {
+          topic: "lk.chat",
+        });
+      }
+      return true;
+    },
+    onSuccess: (_, values) => {
+      console.log({ values, room });
+      if (room) {
+        setMessages(values);
+      }
     },
   });
 };
