@@ -49,7 +49,7 @@ const ChatInput = () => {
                         `bg-slate-100 dark:bg-[#303030] cursor-text p-2.5 grid grid-cols-[auto_1fr_auto]
              [grid-template-areas:'header_header_header'_'leading_primary_trailing'_'._footer_.']
              group-data-expanded/composer:[grid-template-areas:'header_header_header'_'primary_primary_primary'_'leading_footer_trailing']
-             rounded-3xl shadow-lg transition-all`
+             rounded-3xl shadow-lg `
                     )}
                 >
                     <EditorInput onExpand={handleExpand} />
