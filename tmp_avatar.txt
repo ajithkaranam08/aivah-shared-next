@@ -1,0 +1,38 @@
+import {  useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useRef } from 'react';
+import { useAvatarStore } from '@/store/avatar';
+import { useGLTF } from '@react-three/drei';
+import { useMorphTargets } from '@/hooks/avatar/use-avatar-morphs';
+import useAvatarAnimations from '@/hooks/avatar/use-avatar-animations';
+import { useBlinking } from '@/hooks/avatar/use-blinking';
+import { useAvatarStateController } from '@/hooks/avatar/use-avatar-state-controller';
+
+export function Avatar({ modelUrl }: { modelUrl: string }) {
+  const { scene, nodes } = useGLTF(modelUrl);
+  const { actions, group, ...animations } = useAvatarAnimations();
+  const blink = useBlinking();
+  const { camera } = useThree();
+  const { position } = useAvatarStore();
+  const { lerpMorph, applyWolf3DMorph } = useMorphTargets(scene, nodes);
+
+  useAvatarStateController(animations);
+
+  useFrame(() => {
+    applyWolf3DMorph('eyeBlinkLeft', blink ? 1 : 0, 0.5);
+    applyWolf3DMorph('eyeBlinkRight', blink ? 1 : 0, 0.5);
+  });
+
+  useEffect(() => {
+    scene.traverse((child: any) => {
+      if (child.isMesh) child.castShadow = true;
+    });
+  }, [scene]);
+
+  return (
+    <group ref={group}>
+      <primitive object={scene} />
+    </group>
+  );
+}
+
+export default Avatar;

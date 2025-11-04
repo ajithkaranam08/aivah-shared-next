@@ -2,7 +2,6 @@
 
 import Experience from "@/components/experience"
 import ChatBubble from "@/components/chat/bubble"
-import ChatInput from "@/components/chat/input"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -12,6 +11,10 @@ import { ModeToggleBtn } from "@/components/ui/theme-toggle"
 import useResize from "@/hooks/use-resize"
 import { useValidateUUID } from "@/services/validate/query"
 import { useParams } from "next/navigation"
+import { useEffect } from "react"
+import { useCompanionStore } from "@/store/companion"
+import Chat from "@/components/chat"
+import { SESSION_TOKEN } from "@/helper/storage"
 
 
 type Info = {
@@ -22,9 +25,16 @@ type Info = {
 const CompanionEmbedId = () => {
   const { width } = useResize();
   const { embedId } = useParams();
+
   const { data } = useValidateUUID(String(embedId));
 
-  console.log({ data })
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      SESSION_TOKEN.set(data.details.token)
+    }
+  }, [data])
+
+
   const isTablet = width <= 768;
 
 
@@ -33,9 +43,7 @@ const CompanionEmbedId = () => {
     panelDefaultSize: isTablet ? 30 : 50,
   }
 
-
   return <div className="flex justify-center h-full items-center">
-
     <ModeToggleBtn />
     <ResizablePanelGroup
       direction={info.directionType}
@@ -43,17 +51,12 @@ const CompanionEmbedId = () => {
     >
       <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
         <div className="flex h-full items-center justify-center p-6">
-          <Experience embedId={String(embedId)} />
+          {/* <Experience modelUrl={data.details?.avatarUrl} chatId={data.details?.chatbotId} companionType={data.details?.avatarType} /> */}
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
-        <div className="flex p-5 flex-col h-full justify-end gap-2">
-          <ChatBubble timestamp={new Date()} message="Hello! How can I assist you today? asdsafsfs aefsdfgsdfafa faw fasf afadafa adafadfsad faf af" sender="bot" />
-          <ChatBubble timestamp={new Date()} message="Hello! How can asdsfsefa f afaedfsdf sedgfesdgsdg sdgsdg sgag sdgs gsg sgsgsgs gsgsdgsdg sgsdgs dgdssgsg" sender="user" />
-
-          <ChatInput />
-        </div>
+        <Chat />
       </ResizablePanel>
     </ResizablePanelGroup>
   </div>

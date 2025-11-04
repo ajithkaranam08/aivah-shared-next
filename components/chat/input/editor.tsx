@@ -36,6 +36,7 @@ const EditorInput = (props: Props) => {
                     name="text"
                     render={({ field }) => (
                         <div
+                        
                             onInput={(e) => field.onChange(e.currentTarget.textContent)}
                             onKeyDown={handleKeyDown}
                             contentEditable
