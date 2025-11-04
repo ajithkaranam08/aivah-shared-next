@@ -1,5 +1,5 @@
-import { LivekitConnectionResult } from "@/@type/livekit";
-import { useEffect, useEffectEvent} from "react";
+import { LivekitConnectionResult } from "@/types/livekit";
+import { useEffect, useEffectEvent } from "react";
 import {
   RemoteTrack,
   RoomEvent,
@@ -47,13 +47,14 @@ export const useChatInitListener = (room: HookRoom) => {
 };
 
 export const useChatTranscription = (room: HookRoom) => {
-  const { setTranscription, setGreeding, setMesages, greeding } = useConversationStore();
+  const { setTranscription, setGreeding, setMesages, greeding } =
+    useConversationStore();
 
   const handleEvent = useEffectEvent(() => {
     return {
       setTranscription,
       setGreeding,
-      setMesages
+      setMesages,
     };
   });
 
@@ -68,12 +69,12 @@ export const useChatTranscription = (room: HookRoom) => {
           timestamp: new Date(),
         });
 
-          handleEvent().setTranscription("");
+        handleEvent().setTranscription("");
       } else {
         const text = transcription.map((segment) => segment.text).join(" ");
         setTranscription(text);
       }
-      if(greeding.topic) {
+      if (greeding.topic) {
         setGreeding({
           topic: null,
           message: "",
@@ -91,9 +92,6 @@ export const useChatTranscription = (room: HookRoom) => {
 };
 
 export const useAudioTrack = (room?: HookRoom) => {
-
-
-
   // Subscribe to LiveKit audio tracks
   useEffect(() => {
     if (!room) return;
@@ -121,7 +119,6 @@ export const useAudioTrack = (room?: HookRoom) => {
               );
             }
           };
-
         } catch (error) {
           console.warn("Failed to attach LiveKit audio track:", error);
         }

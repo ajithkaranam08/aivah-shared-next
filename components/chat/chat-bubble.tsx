@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import React from 'react'
-import { TooltipInput } from '../input/tooltip';
+import { TooltipInput } from './input/tooltip';
 import { CopyCheck, CopyIcon } from 'lucide-react';
 import { useCopyToClipboard } from '@/hooks/use-copy-clipboard';
 import { formatChatTimestamp } from '@/helper/date-time';

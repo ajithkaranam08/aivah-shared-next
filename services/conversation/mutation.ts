@@ -1,44 +1,48 @@
-import { useMutation } from "@tanstack/react-query"
-import conversationAPi, { ConversationApiProps } from "./api"
+import { useMutation } from "@tanstack/react-query";
+import conversationAPi, { ConversationApiProps } from "./api";
 import { ipAddress } from "@/lib/utils";
-import { v4 as uuidV4 } from "uuid"
+import { v4 as uuidV4 } from "uuid";
 import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
 import { useCompanionStore } from "@/store/companion";
 
-
 type Conversation = {
-    conversationId: number;
-    message: string;
-    userSessionId: number
-} | null
+  conversationId: number;
+  message: string;
+  userSessionId: number;
+};
 
 export const useConversationMutation = () => {
-    const {setConfigureConversation} = useCompanionStore();
-    return useMutation<Conversation, Error>({
-        mutationFn: async () => {
-            const conversationId = SESSION_CONVERSATION_ID.get();
-            if (!conversationId) {
-                const getIp = await ipAddress();
-                const uuid = uuidV4();
-                const response = await conversationAPi.create({
-                    deliveryType: "companion",
-                    ipAddress: getIp,
-                    sessionId: uuid
-                });
-                setConfigureConversation(response.conversationId);
-                return response;
-            } else {
-                setConfigureConversation(Number(conversationId));
-                return null;
-                
-            }
-        },
+  const { setConfigureConversation } = useCompanionStore();
+  return useMutation<Conversation, Error>({
+    mutationFn: async () => {
+      const conversationId = SESSION_CONVERSATION_ID.get();
+      const sessionId = SESSION_ID.get();
 
-        onSuccess: (data) => {
-            if(data && data.conversationId) {
-                SESSION_CONVERSATION_ID.set(String(data.conversationId));
-                SESSION_ID.set(String(data.userSessionId));
-            }
-        }
-    })
-}
+      if (!conversationId || !sessionId) {
+        const getIp = await ipAddress();
+        const uuid = uuidV4();
+        const response = await conversationAPi.create({
+          deliveryType: "companion",
+          ipAddress: getIp,
+          sessionId: uuid,
+        });
+        setConfigureConversation(response.conversationId);
+        return response;
+      } else {
+        setConfigureConversation(Number(conversationId));
+        return {
+          conversationId: Number(conversationId),
+          message: "fallback",
+          userSessionId: Number(sessionId),
+        };
+      }
+    },
+
+    onSuccess: (data) => {
+      if (data && data.conversationId) {
+        SESSION_CONVERSATION_ID.set(String(data.conversationId));
+        SESSION_ID.set(String(data.userSessionId));
+      }
+    },
+  });
+};

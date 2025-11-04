@@ -1,7 +1,6 @@
 import { DataReceivedProps } from "@/services/conversation/query";
 import { create } from "zustand";
 
-
 interface ConversationStore {
   greeding: DataReceivedProps;
   setGreeding: (greeding: DataReceivedProps) => void;
@@ -11,12 +10,12 @@ interface ConversationStore {
 
   messages: {
     content: string;
-    sender: 'user' | 'bot';
+    sender: "user" | "bot";
     timestamp: string | Date;
   }[];
   setMesages: (messages: {
     content: string;
-    sender: 'user' | 'bot';
+    sender: "user" | "bot";
     timestamp: string | Date;
   }) => void;
 }
@@ -35,7 +34,8 @@ const useConversationStore = create<ConversationStore>((set, get) => ({
   },
 
   messages: [],
-  setMesages: (newMessages) => set({ messages: [...get().messages, newMessages] }),
+  setMesages: (newMessages) =>
+    set({ messages: [newMessages, ...get().messages] }),
 }));
 
 export default useConversationStore;

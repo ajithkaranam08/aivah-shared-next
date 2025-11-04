@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { connectToLiveKit } from "@/connector/livekit";
 import { toast } from "sonner";
-import { LivekitConnectionResult } from "@/@type/livekit";
+import { LivekitConnectionResult } from "@/types/livekit";
 import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
-import { ChatbotDetails } from "@/@type/validation";
+import { ChatbotDetails } from "@/types/validation";
 import { RoomEvent } from "livekit-client";
 
 // Define Zustand store type

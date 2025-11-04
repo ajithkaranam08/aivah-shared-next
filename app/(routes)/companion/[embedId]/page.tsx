@@ -1,7 +1,7 @@
 "use client"
 
 import Experience from "@/components/experience"
-import ChatBubble from "@/components/chat/bubble"
+import ChatBubble from "@/components/chat/chat-bubble"
 import {
   ResizableHandle,
   ResizablePanel,

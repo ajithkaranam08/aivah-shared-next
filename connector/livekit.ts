@@ -2,7 +2,7 @@ import envConfig from "@/config/env";
 import { SESSION_TOKEN, SESSION_ID } from "@/helper/storage";
 import { v4 as uuidv4 } from "uuid";
 import { Room } from "livekit-client";
-import { LivekitConnectionParams, LivekitResponse } from "@/@type/livekit";
+import { LivekitConnectionParams, LivekitResponse } from "@/types/livekit";
 
 export const connectToLiveKit = async ({
   knowledgeBaseId,
