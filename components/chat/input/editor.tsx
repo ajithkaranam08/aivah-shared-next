@@ -4,6 +4,7 @@ import { ChatFormType } from "@/zod-schema/chat";
 import { checkExpansion, createTag, placeCaretAtEnd } from "@/helper/chat";
 import { ChatInputExpandTypes } from "@/types/chat";
 
+
 const EditorInput = ({
     onExpand,
 }: {
@@ -67,7 +68,7 @@ const EditorInput = ({
             if (!text) return;
 
             form.handleSubmit((data) => {
-                console.log("Form submitted:", data);
+
                 form.reset();
                 if (editorRef.current)
                     editorRef.current.innerHTML =

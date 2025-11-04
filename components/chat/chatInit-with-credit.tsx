@@ -7,7 +7,11 @@ import { Room } from 'livekit-client';
 const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
     const { greeding } = useConversationStore()
     useChatInitListener(room);
-    return greeding.message ? <LoaderFive text={greeding.message} /> : null;
+    return greeding.message ?
+        <div className='flex-1 flex justify-center items-center h-full'>
+            <LoaderFive text={greeding.message} />
+        </div>
+        : null;
 }
 
 export default ChatInitWithCredit

@@ -7,6 +7,8 @@ import {
   TranscriptionSegment,
 } from "livekit-client";
 import useConversationStore from "@/store/conversation";
+import { useSyncChatMutation } from "./mutation";
+import { SESSION_CONVERSATION_ID } from "@/helper/storage";
 
 export interface DataReceivedProps {
   topic: "message" | null;
@@ -17,15 +19,21 @@ export interface DataReceivedProps {
 type HookRoom = LivekitConnectionResult["room"] | null;
 
 export const conversationKeys = {
-  create: (id: string) => ["conversation", id] as const,
+  create: (id: string) => ["conversation", id],
+  getChats: (conversationId: number) => [
+    "conversation",
+    conversationId,
+    "chats",
+  ],
 };
 
 export const useChatInitListener = (room: HookRoom) => {
-  const { setGreeding } = useConversationStore();
+  const { setGreeding, setLoadingType } = useConversationStore();
 
   const handleEvent = useEffectEvent(() => {
     return {
       setGreeding,
+      setLoadingType,
     };
   });
 
@@ -36,6 +44,7 @@ export const useChatInitListener = (room: HookRoom) => {
       const dataString = textDecoder.decode(data);
       const jsonData = JSON.parse(dataString) as DataReceivedProps;
       handleEvent().setGreeding(jsonData);
+      handleEvent().setLoadingType("INIT");
     };
 
     room.on(RoomEvent.DataReceived, handleReceive);
@@ -47,35 +56,55 @@ export const useChatInitListener = (room: HookRoom) => {
 };
 
 export const useChatTranscription = (room: HookRoom) => {
-  const { setTranscription, setGreeding, setMesages, greeding } =
-    useConversationStore();
+  const {
+    setTranscription,
+    setGreeding,
+    setMessages,
+    greeding,
+    setLoadingType,
+  } = useConversationStore();
+
+  const { mutate: syncChat } = useSyncChatMutation();
+  const conversationId = SESSION_CONVERSATION_ID.get();
 
   const handleEvent = useEffectEvent(() => {
     return {
       setTranscription,
       setGreeding,
-      setMesages,
+      setMessages,
+      syncChat,
+      setLoadingType,
     };
   });
 
   useEffect(() => {
-    if (!room) return;
+    if (!room || !conversationId) return;
     const handleReceive = (transcription: TranscriptionSegment[]) => {
+      console.log({ transcription });
       const isFinal = transcription.find((segment) => segment.final);
+
       if (isFinal) {
-        setMesages({
-          content: transcription.map((segment) => segment.text).join(" "),
+        handleEvent().setMessages({
+          content: isFinal.text,
           sender: "bot",
-          timestamp: new Date(),
+          timestamp: new Date(isFinal.lastReceivedTime),
+          id: isFinal.id,
+        });
+        handleEvent().syncChat({
+          chat: isFinal.text,
+          conversationId: Number(conversationId),
+          chatType: "normal",
         });
 
         handleEvent().setTranscription("");
+        handleEvent().setLoadingType("NONE");
       } else {
+        handleEvent().setLoadingType("GREEDING");
         const text = transcription.map((segment) => segment.text).join(" ");
-        setTranscription(text);
+        handleEvent().setTranscription(text);
       }
       if (greeding.topic) {
-        setGreeding({
+        handleEvent().setGreeding({
           topic: null,
           message: "",
           timestamp: null,
@@ -88,11 +117,17 @@ export const useChatTranscription = (room: HookRoom) => {
     return () => {
       room.off(RoomEvent.TranscriptionReceived, handleReceive);
     };
-  }, [room, greeding]);
+  }, [room, greeding, conversationId]);
 };
 
 export const useAudioTrack = (room?: HookRoom) => {
-  // Subscribe to LiveKit audio tracks
+  const { setLoadingType } = useConversationStore();
+
+  const handleEvent = useEffectEvent(() => {
+    return {
+      setLoadingType,
+    };
+  });
   useEffect(() => {
     if (!room) return;
 
@@ -107,18 +142,7 @@ export const useAudioTrack = (room?: HookRoom) => {
           // Attach track
           track.attach(audioEl);
           document.body.appendChild(audioEl);
-
-          // Only try play after unlock
-          const playAudio = async () => {
-            try {
-              await audioEl.play();
-            } catch (err) {
-              console.warn(
-                "Playback failed (will retry after user gesture):",
-                err
-              );
-            }
-          };
+          handleEvent().setLoadingType("NONE");
         } catch (error) {
           console.warn("Failed to attach LiveKit audio track:", error);
         }

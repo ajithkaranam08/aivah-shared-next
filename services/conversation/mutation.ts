@@ -4,6 +4,9 @@ import { ipAddress } from "@/lib/utils";
 import { v4 as uuidV4 } from "uuid";
 import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
 import { useCompanionStore } from "@/store/companion";
+import { ChatMessage } from "@/types/chat";
+import { ApiResponseWithChat } from "@/types/response";
+import useConversationStore from "@/store/conversation";
 
 type Conversation = {
   conversationId: number;
@@ -37,12 +40,37 @@ export const useConversationMutation = () => {
         };
       }
     },
-
     onSuccess: (data) => {
       if (data && data.conversationId) {
         SESSION_CONVERSATION_ID.set(String(data.conversationId));
         SESSION_ID.set(String(data.userSessionId));
       }
+    },
+  });
+};
+
+export const useSyncChatMutation = () => {
+  return useMutation<unknown, Error, ConversationApiProps["syncChat"]>({
+    mutationFn: async (body) => {
+      return await conversationAPi.syncChat(body);
+    },
+  });
+};
+
+export const useGetChatsMutation = () => {
+  const { setMessages } = useConversationStore();
+  return useMutation<ApiResponseWithChat, Error, number>({
+    mutationFn: async (conversationId) => {
+      return await conversationAPi.getChats(conversationId);
+    },
+    onSuccess: (values) => {
+      const messages: ChatMessage[] = values.chats.map((msg) => ({
+        id: String(msg.chatId),
+        sender: "bot",
+        content: msg.chat,
+        timestamp: new Date(msg.dateTime),
+      }));
+      setMessages(messages);
     },
   });
 };
