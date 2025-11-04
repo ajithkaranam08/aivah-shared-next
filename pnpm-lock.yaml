@@ -80,9 +80,6 @@ importers:
       react-resizable-panels:
         specifier: ^3.0.6
         version: 3.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      react-voice-visualizer:
-        specifier: ^2.0.8
-        version: 2.0.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       socket.io-client:
         specifier: ^4.8.1
         version: 4.8.1
@@ -2438,12 +2435,6 @@ packages:
     peerDependenciesMeta:
       react-dom:
         optional: true
-
-  react-voice-visualizer@2.0.8:
-    resolution: {integrity: sha512-oA/IyNeh15+mERgm2n33IAqQaMGBEFN1n3gs2V/0LbLyscqsbhNo8JOFXh2I9neIqYJ4q27TEzXzbO00Xq/aXg==}
-    peerDependencies:
-      react: ^18.2.0
-      react-dom: ^18.2.0
 
   react@19.2.0:
     resolution: {integrity: sha512-tmbWg6W31tQLeB5cdIBOicJDJRR2KzXsV7uSK9iNfLWQ5bIZfxuPEHp7M8wiHyHnn0DD1i7w3Zmin0FtkrwoCQ==}
@@ -5258,11 +5249,6 @@ snapshots:
     dependencies:
       react: 19.2.0
     optionalDependencies:
-      react-dom: 19.2.0(react@19.2.0)
-
-  react-voice-visualizer@2.0.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
   react@19.2.0: {}

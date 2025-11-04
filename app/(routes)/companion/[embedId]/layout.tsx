@@ -1,6 +1,6 @@
 import React from 'react'
-// import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query'
-// import { validateQueryOptions } from '@/services/validate/query'
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query'
+import { validateQueryOptions } from '@/services/validate/query'
 
 type Props = {
     children: React.ReactNode;
@@ -10,11 +10,15 @@ type Props = {
 const Companionlayout = async ({ children, params }: Props) => {
     const { embedId } = await params;
 
-    // const queryClient = new QueryClient();
-    // await queryClient.prefetchQuery(validateQueryOptions(embedId));
-    // const dehydratedState = dehydrate(queryClient);
+    const queryClient = new QueryClient();
+    await queryClient.prefetchQuery(validateQueryOptions(embedId));
+    const dehydratedState = dehydrate(queryClient);
 
-    return children 
+    return (
+        <HydrationBoundary state={dehydratedState}>
+            {children}
+        </HydrationBoundary>
+    )
 }
 
 export default Companionlayout
