@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 interface ConversationStore {
   greeding: DataReceivedProps;
-  setGreeting: (greeding: DataReceivedProps) => void;
+  setGreeding: (greeding: DataReceivedProps) => void;
 
   transcription: string;
   setTranscription: (transcription: string) => void;
@@ -27,7 +27,7 @@ const useConversationStore = create<ConversationStore>((set, get) => ({
     message: "",
     timestamp: null,
   },
-  setGreeting: (greeding) => set({ greeding }),
+  setGreeding: (greeding) => set({ greeding }),
 
   transcription: "",
   setTranscription: (words) => {

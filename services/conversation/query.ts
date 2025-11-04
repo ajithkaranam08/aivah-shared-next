@@ -21,11 +21,11 @@ export const conversationKeys = {
 };
 
 export const useChatInitListener = (room: HookRoom) => {
-  const { setGreeting } = useConversationStore();
+  const { setGreeding } = useConversationStore();
 
   const handleEvent = useEffectEvent(() => {
     return {
-      setGreeting,
+      setGreeding,
     };
   });
 
@@ -35,7 +35,7 @@ export const useChatInitListener = (room: HookRoom) => {
       const textDecoder = new TextDecoder();
       const dataString = textDecoder.decode(data);
       const jsonData = JSON.parse(dataString) as DataReceivedProps;
-      handleEvent().setGreeting(jsonData);
+      handleEvent().setGreeding(jsonData);
     };
 
     room.on(RoomEvent.DataReceived, handleReceive);
@@ -47,12 +47,12 @@ export const useChatInitListener = (room: HookRoom) => {
 };
 
 export const useChatTranscription = (room: HookRoom) => {
-  const { setTranscription, setGreeting, setMesages, greeding } = useConversationStore();
+  const { setTranscription, setGreeding, setMesages, greeding } = useConversationStore();
 
   const handleEvent = useEffectEvent(() => {
     return {
       setTranscription,
-      setGreeting,
+      setGreeding,
       setMesages
     };
   });
@@ -62,7 +62,7 @@ export const useChatTranscription = (room: HookRoom) => {
     const handleReceive = (transcription: TranscriptionSegment[]) => {
       const isFinal = transcription.find((segment) => segment.final);
       if (isFinal) {
-        handleEvent().setMesages({
+        setMesages({
           content: transcription.map((segment) => segment.text).join(" "),
           sender: "bot",
           timestamp: new Date(),
@@ -71,11 +71,10 @@ export const useChatTranscription = (room: HookRoom) => {
           handleEvent().setTranscription("");
       } else {
         const text = transcription.map((segment) => segment.text).join(" ");
-        handleEvent().setTranscription(text);
+        setTranscription(text);
       }
-      console.log({greeding})
       if(greeding.topic) {
-        handleEvent().setGreeting({
+        setGreeding({
           topic: null,
           message: "",
           timestamp: null,
@@ -88,7 +87,7 @@ export const useChatTranscription = (room: HookRoom) => {
     return () => {
       room.off(RoomEvent.TranscriptionReceived, handleReceive);
     };
-  }, [room]);
+  }, [room, greeding]);
 };
 
 export const useAudioTrack = (room?: HookRoom) => {
