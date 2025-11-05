@@ -81,6 +81,7 @@ const EditorInput = ({
                     timestamp: new Date().toISOString()
                 })
                 form.reset();
+                onExpand(ChatInputExpandTypes.TEXT_EMPTY);
                 if (editorRef.current) {
                     editorRef.current.innerHTML =
                         '<p data-placeholder="Ask anything" class="place-holder"></p>';
