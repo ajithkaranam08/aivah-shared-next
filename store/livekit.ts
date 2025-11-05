@@ -1,10 +1,11 @@
-import { create } from "zustand";
-import { connectToLiveKit } from "@/connector/livekit";
-import { toast } from "sonner";
-import { LivekitConnectionResult } from "@/types/livekit";
-import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
-import { ChatbotDetails } from "@/types/validation";
 import { RoomEvent } from "livekit-client";
+import { toast } from "sonner";
+import { create } from "zustand";
+
+import { connectToLiveKit } from "@/connector/livekit";
+import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
+import { LivekitConnectionResult } from "@/types/livekit";
+import { ChatbotDetails } from "@/types/validation";
 
 // Define Zustand store type
 interface LivekitState {

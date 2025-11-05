@@ -1,17 +1,19 @@
-import React from 'react'
-import useConversationStore from '@/store/conversation'
-import { LoaderFive } from "@/components/ui/loader"
-import { useChatInitListener } from '@/services/conversation/query';
-import { Room } from 'livekit-client';
+import React from "react";
+
+import { Room } from "livekit-client";
+
+import { LoaderFive } from "@/components/ui/loader";
+import { useChatInitListener } from "@/services/conversation/query";
+import useConversationStore from "@/store/conversation";
 
 const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
-    const { greeting } = useConversationStore()
-    useChatInitListener(room);
-    return greeting.message ?
-        <div className='flex-1 flex justify-center items-center h-full'>
-            <LoaderFive text={greeting.message} />
-        </div>
-        : null;
-}
+  const { greeting } = useConversationStore();
+  useChatInitListener(room);
+  return greeting.message ? (
+    <div className="flex h-full flex-1 items-center justify-center">
+      <LoaderFive text={greeting.message} />
+    </div>
+  ) : null;
+};
 
-export default ChatInitWithCredit
+export default ChatInitWithCredit;

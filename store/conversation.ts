@@ -1,6 +1,7 @@
+import { create } from "zustand";
+
 import { DataReceivedProps } from "@/services/conversation/query";
 import { ChatMessage } from "@/types/chat";
-import { create } from "zustand";
 
 interface ConversationStore {
   greeting: DataReceivedProps;

@@ -1,8 +1,8 @@
-import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useRef } from "react";
 
-import { easing } from 'maath';
-import { Group } from 'three';
+import { useFrame } from "@react-three/fiber";
+import { easing } from "maath";
+import { Group } from "three";
 
 interface CameraRigProps {
   children: React.ReactNode;

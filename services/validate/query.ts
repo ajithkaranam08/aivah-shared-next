@@ -1,6 +1,8 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import validateApi from "./api";
+
 import { ChatbotDetails } from "@/types/validation";
+
+import validateApi from "./api";
 
 export const validateKeys = {
   all: ["validate"] as const,

@@ -1,13 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import conversationAPi, { ConversationApiProps } from "./api";
-import { ipAddress } from "@/lib/utils";
-import { v4 as uuidV4 } from "uuid";
-import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
-import { useCompanionStore } from "@/store/companion";
-import { ChatMessage, ChatRequest } from "@/types/chat";
-import { ApiResponseWithChat } from "@/types/response";
-import useConversationStore from "@/store/conversation";
 import { Room } from "livekit-client";
+import { v4 as uuidV4 } from "uuid";
+
+import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
+import { ipAddress } from "@/lib/utils";
+import { useCompanionStore } from "@/store/companion";
+import useConversationStore from "@/store/conversation";
+import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
+import { ChatMessage, ChatRequest } from "@/types/chat";
+
+import conversationAPi, { ConversationApiProps } from "./api";
 
 type Conversation = {
   conversationId: number;
@@ -60,18 +62,22 @@ export const useSyncChatMutation = () => {
 
 export const useGetChatsMutation = () => {
   const { setMessages } = useConversationStore();
-  return useMutation<ApiResponseWithChat, Error, number>({
-    mutationFn: async (conversationId) => {
-      return await conversationAPi.getChats(conversationId);
+  return useMutation<
+    ApiResponseWithChat,
+    Error,
+    { conversationId: number } & ApiRequestPageParams
+  >({
+    mutationFn: async ({ conversationId, page, limit }) => {
+      return await conversationAPi.getChats(conversationId, { page, limit });
     },
     onSuccess: (values) => {
       const messages: ChatMessage[] = values.chats.map((msg) => ({
         id: String(msg.chatId),
-        sender: "bot",
+        sender: msg.userSessionId ? "user" : "bot",
         content: msg.chat,
         timestamp: new Date(msg.dateTime),
       }));
-      setMessages(messages);
+      setMessages(messages.reverse());
     },
   });
 };

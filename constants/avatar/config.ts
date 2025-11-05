@@ -7,4 +7,5 @@ export const BLINK_DURATION_MIN = 150;
 export const BLINK_DURATION_MAX = 250;
 export const DEFAULT_MORPH_SMOOTHING = 0.08;
 export const DEFAULT_WINK_SMOOTHING = 0.5;
-export const DEBUG_MODE = typeof window !== 'undefined' && window.location.href.includes('debug');
+export const DEBUG_MODE =
+  typeof window !== "undefined" && window.location.href.includes("debug");

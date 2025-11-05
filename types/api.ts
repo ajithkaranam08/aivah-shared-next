@@ -11,3 +11,8 @@ export type ApiResponseWithChat = {
   message: string;
   count?: string;
 };
+
+export type ApiRequestPageParams = {
+  page: string;
+  limit?: string;
+};
