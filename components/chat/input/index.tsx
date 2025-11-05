@@ -92,7 +92,7 @@ const ChatInput = () => {
             {form.formState.isValid ? (
               <TooltipInput
                 tooltipText="Send message"
-                onClick={form.handleSubmit(onSubmit)}
+                onClick={() => form.handleSubmit(onSubmit)()}
               >
                 <ArrowUpIcon size={18} />
               </TooltipInput>
