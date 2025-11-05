@@ -1,5 +1,5 @@
 import { apiFetch, ConnectOptions } from "@/connector/client-api";
-import { ApiResponseWithChat } from "@/types/response";
+import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
 
 export interface ConversationApiProps {
   create: {
@@ -32,10 +32,12 @@ const conversationAPi = {
     options?: ConnectOptions
   ) => apiFetch.post(`lk-session/sync-chat`, body, options),
 
-  getChats: (conversationId: number) =>
-    apiFetch.get<ApiResponseWithChat>(
-      `embed-share/conversation/${conversationId}/chat`
-    ),
+  getChats: (conversationId: number, parmas?: ApiRequestPageParams) => {
+    const queryParams = new URLSearchParams(parmas);
+    return apiFetch.get<ApiResponseWithChat>(
+      `embed-share/conversation/${conversationId}/chat?${queryParams}`
+    );
+  },
 };
 
 export default conversationAPi;

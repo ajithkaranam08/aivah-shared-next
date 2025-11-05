@@ -4,6 +4,7 @@ import { TooltipInput } from './input/tooltip';
 import { CopyCheck, CopyIcon } from 'lucide-react';
 import { useCopyToClipboard } from '@/hooks/use-copy-clipboard';
 import { formatChatTimestamp } from '@/helper/date-time';
+import MarkdownRenderer from '../ui/markdown-renderer';
 
 interface ChatBubbleProps {
     content: string;
@@ -17,11 +18,11 @@ const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
     return (
         <div className={cn('flex w-full group', sender === 'user' ? 'justify-end' : 'justify-start')}>
             <div className={cn('max-w-[80%] flex flex-col gap-1', sender === 'user' ? 'items-end' : 'items-start')}>
-                <section className={cn(`p-4 rounded-tl-3xl  rounded-tr-3xl max-w-full`, {
+                <section className={cn(`p-4 rounded-tl-3xl  rounded-tr-3xl max-w-full wrap-break-word`, {
                     'bg-[#303030] dark:bg-foreground text-background self-end rounded-bl-3xl': sender === 'user',
                     'bg-slate-100 text-black dark:bg-secondary dark:text-white self-start rounded-br-3xl': sender === 'bot',
                 })}>
-                    {content}
+                    <MarkdownRenderer content={content} />
                 </section>
 
                 <section className={cn('flex gap-2 items-center', sender === 'user' ? 'flex' : 'flex-row-reverse')}>
