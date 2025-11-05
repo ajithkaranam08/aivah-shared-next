@@ -10,7 +10,7 @@ const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
   const { greeting } = useConversationStore();
   useChatInitListener(room);
   return greeting.message ? (
-    <div className="flex h-full flex-1 items-center justify-center">
+    <div className=" flex">
       <LoaderFive text={greeting.message} />
     </div>
   ) : null;
