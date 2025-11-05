@@ -1,6 +1,8 @@
-import useConversationStore from "@/store/conversation";
-import { useChatTranscription } from "@/services/conversation/query";
 import { Room } from "livekit-client";
+
+import { useChatTranscription } from "@/services/conversation/query";
+import useConversationStore from "@/store/conversation";
+
 import MarkdownRenderer from "../ui/markdown-renderer";
 
 const GenerateChat = ({ room }: { room: Room | null }) => {
@@ -9,11 +11,11 @@ const GenerateChat = ({ room }: { room: Room | null }) => {
   useChatTranscription(room);
 
   return transcription?.length ? (
-    <div className={"flex w-full group justify-start"}>
-      <div className={"max-w-[80%] flex flex-col gap-1 items-start"}>
+    <div className={"group flex w-full justify-start"}>
+      <div className={"flex max-w-[80%] flex-col items-start gap-1"}>
         <section
           className={
-            "p-4 rounded-tl-3xl  rounded-tr-3xl bg-slate-100 text-black dark:bg-secondary dark:text-white self-start rounded-br-3xl"
+            "dark:bg-secondary self-start rounded-tl-3xl rounded-tr-3xl rounded-br-3xl bg-slate-100 p-4 text-black dark:text-white"
           }
         >
           <MarkdownRenderer content={transcription} />

@@ -1,11 +1,17 @@
-import { Cylinder, MeshReflectorMaterial, Sparkles, useTexture } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
 import { memo, useMemo, useRef } from "react";
-import { Color, ColorRepresentation } from "three";
-import { easing } from "maath";
 
-import Overlay from "../shared-scene-components/overlay";
+import {
+  Cylinder,
+  MeshReflectorMaterial,
+  Sparkles,
+  useTexture,
+} from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { easing } from "maath";
+import { Color, ColorRepresentation } from "three";
+
 import DayNightScene from "../shared-scene-components/day-night";
+import Overlay from "../shared-scene-components/overlay";
 
 export const Standard = memo(({ color }: { color: ColorRepresentation }) => {
   // Load texture for alpha masking
@@ -29,7 +35,9 @@ export const Standard = memo(({ color }: { color: ColorRepresentation }) => {
 
   const isMobile = () => {
     if (typeof navigator === "undefined") return false;
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
   };
 
   return (
@@ -90,4 +98,3 @@ export const Standard = memo(({ color }: { color: ColorRepresentation }) => {
 });
 
 Standard.displayName = "Standard";
-

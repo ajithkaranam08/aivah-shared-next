@@ -1,30 +1,30 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface CompanionState {
-    isAudioPlaying: boolean;
-    muteAvatar: boolean;
-    stopGeneration: number;
-    configureConversation: number;
-    audioStopped: number;
+  isAudioPlaying: boolean;
+  muteAvatar: boolean;
+  stopGeneration: number;
+  configureConversation: number;
+  audioStopped: number;
 
-    setAudioPlaying: (state: boolean) => void;
-    setAudioStopped: (state: number) => void;
-    setMute: (state: boolean) => void;
-    setStopGeneration: (count: number) => void;
-    setConfigureConversation: (state: number) => void;
+  setAudioPlaying: (state: boolean) => void;
+  setAudioStopped: (state: number) => void;
+  setMute: (state: boolean) => void;
+  setStopGeneration: (count: number) => void;
+  setConfigureConversation: (state: number) => void;
 }
 
 export const useCompanionStore = create<CompanionState>((set) => ({
-    isAudioPlaying: false,
-    lipsyncData: null,
-    muteAvatar: false,
-    stopGeneration: 0,
-    audioStopped: 0,
+  isAudioPlaying: false,
+  lipsyncData: null,
+  muteAvatar: false,
+  stopGeneration: 0,
+  audioStopped: 0,
 
-    configureConversation: 0,
-    setAudioPlaying: (s) => set({ isAudioPlaying: s }),
-    setAudioStopped: (s) => set({ audioStopped: s }),
-    setMute: (s) => set({ muteAvatar: s }),
-    setStopGeneration: (n) => set({ stopGeneration: n }),
-    setConfigureConversation: (s) => set({ configureConversation: s }),
+  configureConversation: 0,
+  setAudioPlaying: (s) => set({ isAudioPlaying: s }),
+  setAudioStopped: (s) => set({ audioStopped: s }),
+  setMute: (s) => set({ muteAvatar: s }),
+  setStopGeneration: (n) => set({ stopGeneration: n }),
+  setConfigureConversation: (s) => set({ configureConversation: s }),
 }));

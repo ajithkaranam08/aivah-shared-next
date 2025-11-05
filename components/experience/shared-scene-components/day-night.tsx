@@ -1,143 +1,157 @@
+import React, { useMemo, useRef } from "react";
 
-import React, { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { BackSide, Color, Vector2 } from 'three';
+import { useFrame } from "@react-three/fiber";
+import { BackSide, Color, Vector2 } from "three";
 
 interface DayNightSceneProps {
-    backgroundColor: Color;
+  backgroundColor: Color;
 }
 
 const DayNightScene: React.FC<DayNightSceneProps> = ({ backgroundColor }) => {
-    const materialRef = useRef<any>(null);
+  const materialRef = useRef<any>(null);
 
-    // Enhanced aviation-based time schemes with research-backed hex values
-    const gradientColors = useMemo(() => {
-        const currentHour = new Date().getHours();
-        const currentMinute = new Date().getMinutes();
-        const timeDecimal = currentHour + currentMinute / 60;
+  // Enhanced aviation-based time schemes with research-backed hex values
+  const gradientColors = useMemo(() => {
+    const currentHour = new Date().getHours();
+    const currentMinute = new Date().getMinutes();
+    const timeDecimal = currentHour + currentMinute / 60;
 
-        // Aircraft-view sky gradients based on atmospheric scattering research
-        const timeSchemes = {
-            preDawn: { // 4-5 AM - Deep twilight from aircraft
-                top: '#022660', // Cool Black (deep space view)
-                upper: '#0D469D', // Yale Blue (upper atmosphere)
-                middle: '#6D54A9', // Royal Purple (atmospheric layer)
-                lower: '#CE75C2', // Deep Mauve (horizon glow)
-                bottom: '#E5C7BB' // Desert Sand (earth reflection)
-            },
-            dawn: { // 5-7 AM - Golden hour from altitude
-                top: '#1C3C6C', // Deep blue (high altitude view)
-                upper: '#2B4D68', // Atmospheric blue
-                middle: '#337882', // Teal transition
-                lower: '#E49759', // Dawn orange (research-backed)
-                bottom: '#F7CD5D' // Sunrise yellow (research-backed)
-            },
-            sunrise: { // 7-9 AM - Full sunrise spectrum
-                top: '#4E518B', // Twilight purple
-                upper: '#FF6B3E', // Vibrant orange (sky high palette)
-                middle: '#F7C16A', // Golden yellow
-                lower: '#FFEF7A', // Bright yellow
-                bottom: '#B5D6E0' // Light blue horizon
-            },
-            morning: { // 9-11 AM - Clear morning sky
-                top: '#2F3B62', // Twilight blue
-                upper: '#4682B4', // Steel blue
-                middle: '#87CEEB', // Sky blue
-                lower: '#B0E0E6', // Powder blue
-                bottom: '#F0F8FF' // Alice blue
-            },
-            midday: { // 11 AM - 2 PM - High altitude blue
-                top: '#191970', // Midnight blue (space view)
-                upper: '#4169E1', // Royal blue
-                middle: '#6495ED', // Cornflower blue
-                lower: '#87CEFA', // Light sky blue
-                bottom: '#E0F6FF' // Very light blue
-            },
-            afternoon: { // 2-5 PM - Afternoon haze
-                top: '#483D8B', // Dark slate blue
-                upper: '#5F9EA0', // Cadet blue
-                middle: '#ADD8E6', // Light blue
-                lower: '#F5F5DC', // Beige (atmospheric haze)
-                bottom: '#FFF8DC' // Cornsilk
-            },
-            preEvening: { // 5-6 PM - Pre-golden hour
-                top: '#6A5ACD', // Slate blue
-                upper: '#FF8C00', // Dark orange
-                middle: '#FFA500', // Orange
-                lower: '#FFD700', // Gold
-                bottom: '#FFFFE0' // Light yellow
-            },
-            goldenHour: { // 6-8 PM - Aviation golden hour
-                top: '#4E5978', // Purple navy (dusk palette)
-                upper: '#D46671', // Fuzzy wuzzy
-                middle: '#E79C63', // Earth yellow
-                lower: '#FF6B3E', // Orange red (sunset palette)
-                bottom: '#FFA700' // Orange (sunrise palette)
-            },
-            sunset: { // 8-9 PM - Full sunset from aircraft
-                top: '#27214E', // Deep purple (high altitude)
-                upper: '#5B2C6F', // Purple (sunset palette)
-                middle: '#E74C3C', // Red
-                lower: '#F39C12', // Orange
-                bottom: '#F7DC6F' // Yellow
-            },
-            dusk: { // 9-10 PM - Twilight colors
-                top: '#301748', // Dark purple (night palette)
-                upper: '#7E5072', // Twilight lavender
-                middle: '#AB5A74', // China rose
-                lower: '#E27E7E', // New York pink
-                bottom: '#EA9E79' // Dark salmon
-            },
-            night: { // 10 PM - 4 AM - Night sky from altitude
-                top: '#000000', // True black (space)
-                upper: '#191970', // Midnight blue
-                middle: '#2F2F4F', // Dark slate gray
-                lower: '#483D8B', // Dark slate blue
-                bottom: '#6A5ACD' // Slate blue
-            }
-        };
+    // Aircraft-view sky gradients based on atmospheric scattering research
+    const timeSchemes = {
+      preDawn: {
+        // 4-5 AM - Deep twilight from aircraft
+        top: "#022660", // Cool Black (deep space view)
+        upper: "#0D469D", // Yale Blue (upper atmosphere)
+        middle: "#6D54A9", // Royal Purple (atmospheric layer)
+        lower: "#CE75C2", // Deep Mauve (horizon glow)
+        bottom: "#E5C7BB", // Desert Sand (earth reflection)
+      },
+      dawn: {
+        // 5-7 AM - Golden hour from altitude
+        top: "#1C3C6C", // Deep blue (high altitude view)
+        upper: "#2B4D68", // Atmospheric blue
+        middle: "#337882", // Teal transition
+        lower: "#E49759", // Dawn orange (research-backed)
+        bottom: "#F7CD5D", // Sunrise yellow (research-backed)
+      },
+      sunrise: {
+        // 7-9 AM - Full sunrise spectrum
+        top: "#4E518B", // Twilight purple
+        upper: "#FF6B3E", // Vibrant orange (sky high palette)
+        middle: "#F7C16A", // Golden yellow
+        lower: "#FFEF7A", // Bright yellow
+        bottom: "#B5D6E0", // Light blue horizon
+      },
+      morning: {
+        // 9-11 AM - Clear morning sky
+        top: "#2F3B62", // Twilight blue
+        upper: "#4682B4", // Steel blue
+        middle: "#87CEEB", // Sky blue
+        lower: "#B0E0E6", // Powder blue
+        bottom: "#F0F8FF", // Alice blue
+      },
+      midday: {
+        // 11 AM - 2 PM - High altitude blue
+        top: "#191970", // Midnight blue (space view)
+        upper: "#4169E1", // Royal blue
+        middle: "#6495ED", // Cornflower blue
+        lower: "#87CEFA", // Light sky blue
+        bottom: "#E0F6FF", // Very light blue
+      },
+      afternoon: {
+        // 2-5 PM - Afternoon haze
+        top: "#483D8B", // Dark slate blue
+        upper: "#5F9EA0", // Cadet blue
+        middle: "#ADD8E6", // Light blue
+        lower: "#F5F5DC", // Beige (atmospheric haze)
+        bottom: "#FFF8DC", // Cornsilk
+      },
+      preEvening: {
+        // 5-6 PM - Pre-golden hour
+        top: "#6A5ACD", // Slate blue
+        upper: "#FF8C00", // Dark orange
+        middle: "#FFA500", // Orange
+        lower: "#FFD700", // Gold
+        bottom: "#FFFFE0", // Light yellow
+      },
+      goldenHour: {
+        // 6-8 PM - Aviation golden hour
+        top: "#4E5978", // Purple navy (dusk palette)
+        upper: "#D46671", // Fuzzy wuzzy
+        middle: "#E79C63", // Earth yellow
+        lower: "#FF6B3E", // Orange red (sunset palette)
+        bottom: "#FFA700", // Orange (sunrise palette)
+      },
+      sunset: {
+        // 8-9 PM - Full sunset from aircraft
+        top: "#27214E", // Deep purple (high altitude)
+        upper: "#5B2C6F", // Purple (sunset palette)
+        middle: "#E74C3C", // Red
+        lower: "#F39C12", // Orange
+        bottom: "#F7DC6F", // Yellow
+      },
+      dusk: {
+        // 9-10 PM - Twilight colors
+        top: "#301748", // Dark purple (night palette)
+        upper: "#7E5072", // Twilight lavender
+        middle: "#AB5A74", // China rose
+        lower: "#E27E7E", // New York pink
+        bottom: "#EA9E79", // Dark salmon
+      },
+      night: {
+        // 10 PM - 4 AM - Night sky from altitude
+        top: "#000000", // True black (space)
+        upper: "#191970", // Midnight blue
+        middle: "#2F2F4F", // Dark slate gray
+        lower: "#483D8B", // Dark slate blue
+        bottom: "#6A5ACD", // Slate blue
+      },
+    };
 
-        // Smooth time-based transitions
-        let scheme;
-        if (timeDecimal >= 4 && timeDecimal < 5) scheme = timeSchemes.preDawn;
-        else if (timeDecimal >= 5 && timeDecimal < 7) scheme = timeSchemes.dawn;
-        else if (timeDecimal >= 7 && timeDecimal < 9) scheme = timeSchemes.sunrise;
-        else if (timeDecimal >= 9 && timeDecimal < 11) scheme = timeSchemes.morning;
-        else if (timeDecimal >= 11 && timeDecimal < 14) scheme = timeSchemes.midday;
-        else if (timeDecimal >= 14 && timeDecimal < 17) scheme = timeSchemes.afternoon;
-        else if (timeDecimal >= 17 && timeDecimal < 18) scheme = timeSchemes.preEvening;
-        else if (timeDecimal >= 18 && timeDecimal < 20) scheme = timeSchemes.goldenHour;
-        else if (timeDecimal >= 20 && timeDecimal < 21) scheme = timeSchemes.sunset;
-        else if (timeDecimal >= 21 && timeDecimal < 22) scheme = timeSchemes.dusk;
-        else scheme = timeSchemes.night;
+    // Smooth time-based transitions
+    let scheme;
+    if (timeDecimal >= 4 && timeDecimal < 5) scheme = timeSchemes.preDawn;
+    else if (timeDecimal >= 5 && timeDecimal < 7) scheme = timeSchemes.dawn;
+    else if (timeDecimal >= 7 && timeDecimal < 9) scheme = timeSchemes.sunrise;
+    else if (timeDecimal >= 9 && timeDecimal < 11) scheme = timeSchemes.morning;
+    else if (timeDecimal >= 11 && timeDecimal < 14) scheme = timeSchemes.midday;
+    else if (timeDecimal >= 14 && timeDecimal < 17)
+      scheme = timeSchemes.afternoon;
+    else if (timeDecimal >= 17 && timeDecimal < 18)
+      scheme = timeSchemes.preEvening;
+    else if (timeDecimal >= 18 && timeDecimal < 20)
+      scheme = timeSchemes.goldenHour;
+    else if (timeDecimal >= 20 && timeDecimal < 21) scheme = timeSchemes.sunset;
+    else if (timeDecimal >= 21 && timeDecimal < 22) scheme = timeSchemes.dusk;
+    else scheme = timeSchemes.night;
 
-        // Enhanced blending with user's background color
-        const baseColor = backgroundColor.getHSL({ h: 0, s: 0, l: 0 });
-        const blendFactor = 0.15; // Reduced to 15% for more realistic sky colors
+    // Enhanced blending with user's background color
+    const baseColor = backgroundColor.getHSL({ h: 0, s: 0, l: 0 });
+    const blendFactor = 0.15; // Reduced to 15% for more realistic sky colors
 
-        const blendColor = (timeColor: string) => {
-            const tc = new Color(timeColor);
-            const tcHSL = tc.getHSL({ h: 0, s: 0, l: 0 });
+    const blendColor = (timeColor: string) => {
+      const tc = new Color(timeColor);
+      const tcHSL = tc.getHSL({ h: 0, s: 0, l: 0 });
 
-            return new Color().setHSL(
-                baseColor.h * blendFactor + tcHSL.h * (1 - blendFactor),
-                Math.min(baseColor.s * blendFactor + tcHSL.s * (1 - blendFactor), 1),
-                Math.min(baseColor.l * blendFactor + tcHSL.l * (1 - blendFactor), 1)
-            );
-        };
+      return new Color().setHSL(
+        baseColor.h * blendFactor + tcHSL.h * (1 - blendFactor),
+        Math.min(baseColor.s * blendFactor + tcHSL.s * (1 - blendFactor), 1),
+        Math.min(baseColor.l * blendFactor + tcHSL.l * (1 - blendFactor), 1)
+      );
+    };
 
-        return {
-            top: blendColor(scheme.top),
-            upper: blendColor(scheme.upper),
-            middle: blendColor(scheme.middle),
-            lower: blendColor(scheme.lower),
-            bottom: blendColor(scheme.bottom),
-            timeDecimal
-        };
-    }, [backgroundColor]);
+    return {
+      top: blendColor(scheme.top),
+      upper: blendColor(scheme.upper),
+      middle: blendColor(scheme.middle),
+      lower: blendColor(scheme.lower),
+      bottom: blendColor(scheme.bottom),
+      timeDecimal,
+    };
+  }, [backgroundColor]);
 
-    // Enhanced interactive animated shader with more active atmospheric effects
-    const vertexShader = `
+  // Enhanced interactive animated shader with more active atmospheric effects
+  const vertexShader = `
     varying vec2 vUv;
     varying vec3 vWorldPosition;
     varying vec3 vNormal;
@@ -151,7 +165,7 @@ const DayNightScene: React.FC<DayNightSceneProps> = ({ backgroundColor }) => {
     }
   `;
 
-    const fragmentShader = `
+  const fragmentShader = `
     uniform vec3 topColor;
     uniform vec3 upperColor;
     uniform vec3 middleColor;
@@ -340,42 +354,42 @@ const DayNightScene: React.FC<DayNightSceneProps> = ({ backgroundColor }) => {
     }
   `;
 
-    // Enhanced animation loop with more dynamic effects
-    useFrame((state) => {
-        if (materialRef.current) {
-            materialRef.current.uniforms.time.value = state.clock.elapsedTime;
+  // Enhanced animation loop with more dynamic effects
+  useFrame((state) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.time.value = state.clock.elapsedTime;
 
-            // Enhanced mouse interaction with momentum
-            const mouse = state.mouse;
-            const targetX = mouse.x;
-            const targetY = mouse.y;
+      // Enhanced mouse interaction with momentum
+      const mouse = state.mouse;
+      const targetX = mouse.x;
+      const targetY = mouse.y;
 
-            // Smooth mouse following with some momentum
-            materialRef.current.uniforms.mouse.value.lerp(
-                new Vector2(targetX, targetY),
-                0.05
-            );
-        }
-    });
+      // Smooth mouse following with some momentum
+      materialRef.current.uniforms.mouse.value.lerp(
+        new Vector2(targetX, targetY),
+        0.05
+      );
+    }
+  });
 
-    return (
-        <shaderMaterial
-            ref={materialRef}
-            side={BackSide}
-            vertexShader={vertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={{
-                topColor: { value: gradientColors.top },
-                upperColor: { value: gradientColors.upper },
-                middleColor: { value: gradientColors.middle },
-                lowerColor: { value: gradientColors.lower },
-                bottomColor: { value: gradientColors.bottom },
-                time: { value: 0 },
-                mouse: { value: new Vector2(0, 0) },
-                timeDecimal: { value: gradientColors.timeDecimal }
-            }}
-        />
-    );
+  return (
+    <shaderMaterial
+      ref={materialRef}
+      side={BackSide}
+      vertexShader={vertexShader}
+      fragmentShader={fragmentShader}
+      uniforms={{
+        topColor: { value: gradientColors.top },
+        upperColor: { value: gradientColors.upper },
+        middleColor: { value: gradientColors.middle },
+        lowerColor: { value: gradientColors.lower },
+        bottomColor: { value: gradientColors.bottom },
+        time: { value: 0 },
+        mouse: { value: new Vector2(0, 0) },
+        timeDecimal: { value: gradientColors.timeDecimal },
+      }}
+    />
+  );
 };
 
 export default DayNightScene;

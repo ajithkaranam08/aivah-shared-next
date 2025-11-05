@@ -1,4 +1,4 @@
-import { Environment, Lightformer } from '@react-three/drei';
+import { Environment, Lightformer } from "@react-three/drei";
 
 export default function EnvironmentLightSetup() {
   return (

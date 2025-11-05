@@ -1,7 +1,5 @@
 const CompanionEmbedId = () => {
-  return (
-    <div>CompanionEmbedId</div>
-  )
-}
+  return <div>CompanionEmbedId</div>;
+};
 
-export default CompanionEmbedId
+export default CompanionEmbedId;

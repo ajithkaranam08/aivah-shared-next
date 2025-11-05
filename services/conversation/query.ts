@@ -1,14 +1,17 @@
-import { LivekitConnectionResult } from "@/types/livekit";
 import { useEffect, useEffectEvent } from "react";
+
 import {
   RemoteTrack,
   RoomEvent,
   Track,
   TranscriptionSegment,
 } from "livekit-client";
-import useConversationStore from "@/store/conversation";
-import { useSyncChatMutation } from "./mutation";
+
 import { SESSION_CONVERSATION_ID } from "@/helper/storage";
+import useConversationStore from "@/store/conversation";
+import { LivekitConnectionResult } from "@/types/livekit";
+
+import { useSyncChatMutation } from "./mutation";
 
 export interface DataReceivedProps {
   topic: "message" | null;

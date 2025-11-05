@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-type FacialExpression = 'Focused' | 'Happy' | 'Sad' | 'Angry' | 'Neutral';
+type FacialExpression = "Focused" | "Happy" | "Sad" | "Angry" | "Neutral";
 
 export interface UseRandomBehaviorOptions {
   isLipsyncActive: boolean;
@@ -11,12 +11,13 @@ export interface UseRandomBehaviorOptions {
   setCurrentFacialExpression: (expr: FacialExpression) => void;
 }
 
-const pick = <T,>(arr: T[], exclude?: T): T => {
-  if (!arr.length) throw new Error('Empty array');
+const pick = <T>(arr: T[], exclude?: T): T => {
+  if (!arr.length) throw new Error("Empty array");
   let choice: T = arr[Math.floor(Math.random() * arr.length)];
   if (exclude && arr.length > 1) {
     let guard = 10;
-    while (choice === exclude && guard-- > 0) choice = arr[Math.floor(Math.random() * arr.length)];
+    while (choice === exclude && guard-- > 0)
+      choice = arr[Math.floor(Math.random() * arr.length)];
   }
   return choice;
 };
@@ -37,11 +38,17 @@ export const useRandomBehavior = ({
     if (exprTimer.current) clearTimeout(exprTimer.current);
 
     if (isLipsyncActive) {
-      setCurrentFacialExpression('Focused');
+      setCurrentFacialExpression("Focused");
       return;
     }
 
-    const expressions: FacialExpression[] = ['Neutral', 'Happy', 'Sad', 'Angry', 'Focused'];
+    const expressions: FacialExpression[] = [
+      "Neutral",
+      "Happy",
+      "Sad",
+      "Angry",
+      "Focused",
+    ];
 
     const schedule = () => {
       const next = pick(expressions);
@@ -75,5 +82,11 @@ export const useRandomBehavior = ({
       if (idleTimer.current) clearTimeout(idleTimer.current);
       idleTimer.current = null;
     };
-  }, [isLipsyncActive, isWalking, idleAnimationNames.join(','), currentAnimation, setCurrentAnimation]);
+  }, [
+    isLipsyncActive,
+    isWalking,
+    idleAnimationNames.join(","),
+    currentAnimation,
+    setCurrentAnimation,
+  ]);
 };

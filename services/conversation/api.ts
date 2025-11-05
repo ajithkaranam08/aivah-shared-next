@@ -1,4 +1,4 @@
-import { apiFetch, ConnectOptions } from "@/connector/client-api";
+import { ConnectOptions, apiFetch } from "@/connector/client-api";
 import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
 
 export interface ConversationApiProps {

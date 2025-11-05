@@ -1,15 +1,11 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
-import { extend, useFrame, useThree } from '@react-three/fiber';
-import { shaderMaterial } from '@react-three/drei';
-import { animate, motionValue } from 'motion';
-import {
-  AdditiveBlending,
-  Color,
-  Vector2,
-  ShaderMaterial,
-} from 'three';
+import { useEffect, useRef } from "react";
+
+import { shaderMaterial } from "@react-three/drei";
+import { extend, useFrame, useThree } from "@react-three/fiber";
+import { animate, motionValue } from "motion";
+import { AdditiveBlending, Color, ShaderMaterial, Vector2 } from "three";
 
 // ----------------------
 // 🎨 Shader Code
@@ -82,7 +78,7 @@ const OverlayMaterial = shaderMaterial(
     time: 0,
     uProgress: 0,
     iResolution: new Vector2(),
-    color: new Color('#ffffff'),
+    color: new Color("#ffffff"),
   },
   vertexShader,
   fragmentShader
@@ -134,7 +130,7 @@ export default function Overlay({ backgroundColor }: OverlayProps) {
     const progress = motionValue(0);
     const animation = animate(progress, 1.5, {
       duration: 1.95,
-      ease: 'easeOut',
+      ease: "easeOut",
       onUpdate: (v) => (mat.uProgress = v),
     });
 

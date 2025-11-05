@@ -1,13 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import conversationAPi, { ConversationApiProps } from "./api";
-import { ipAddress } from "@/lib/utils";
-import { v4 as uuidV4 } from "uuid";
-import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
-import { useCompanionStore } from "@/store/companion";
-import { ChatMessage, ChatRequest } from "@/types/chat";
-import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
-import useConversationStore from "@/store/conversation";
 import { Room } from "livekit-client";
+import { v4 as uuidV4 } from "uuid";
+
+import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
+import { ipAddress } from "@/lib/utils";
+import { useCompanionStore } from "@/store/companion";
+import useConversationStore from "@/store/conversation";
+import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
+import { ChatMessage, ChatRequest } from "@/types/chat";
+
+import conversationAPi, { ConversationApiProps } from "./api";
 
 type Conversation = {
   conversationId: number;

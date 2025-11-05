@@ -1,7 +1,8 @@
-import envConfig from "@/config/env";
-import { SESSION_TOKEN, SESSION_ID } from "@/helper/storage";
-import { v4 as uuidv4 } from "uuid";
 import { Room } from "livekit-client";
+import { v4 as uuidv4 } from "uuid";
+
+import envConfig from "@/config/env";
+import { SESSION_ID, SESSION_TOKEN } from "@/helper/storage";
 import { LivekitConnectionParams, LivekitResponse } from "@/types/livekit";
 
 export const connectToLiveKit = async ({
