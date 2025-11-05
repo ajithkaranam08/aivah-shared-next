@@ -28,11 +28,11 @@ export const conversationKeys = {
 };
 
 export const useChatInitListener = (room: HookRoom) => {
-  const { setGreeding, setLoadingType } = useConversationStore();
+  const { setGreeting, setLoadingType } = useConversationStore();
 
   const handleEvent = useEffectEvent(() => {
     return {
-      setGreeding,
+      setGreeting,
       setLoadingType,
     };
   });
@@ -43,7 +43,7 @@ export const useChatInitListener = (room: HookRoom) => {
       const textDecoder = new TextDecoder();
       const dataString = textDecoder.decode(data);
       const jsonData = JSON.parse(dataString) as DataReceivedProps;
-      handleEvent().setGreeding(jsonData);
+      handleEvent().setGreeting(jsonData);
       handleEvent().setLoadingType("INIT");
     };
 
@@ -58,9 +58,9 @@ export const useChatInitListener = (room: HookRoom) => {
 export const useChatTranscription = (room: HookRoom) => {
   const {
     setTranscription,
-    setGreeding,
+    setGreeting,
     setMessages,
-    greeding,
+    greeting,
     setLoadingType,
   } = useConversationStore();
 
@@ -70,7 +70,7 @@ export const useChatTranscription = (room: HookRoom) => {
   const handleEvent = useEffectEvent(() => {
     return {
       setTranscription,
-      setGreeding,
+      setGreeting,
       setMessages,
       syncChat,
       setLoadingType,
@@ -103,8 +103,8 @@ export const useChatTranscription = (room: HookRoom) => {
         const text = transcription.map((segment) => segment.text).join(" ");
         handleEvent().setTranscription(text);
       }
-      if (greeding.topic) {
-        handleEvent().setGreeding({
+      if (greeting.topic) {
+        handleEvent().setGreeting({
           topic: null,
           message: "",
           timestamp: null,
@@ -117,7 +117,7 @@ export const useChatTranscription = (room: HookRoom) => {
     return () => {
       room.off(RoomEvent.TranscriptionReceived, handleReceive);
     };
-  }, [room, greeding, conversationId]);
+  }, [room, greeting, conversationId]);
 };
 
 export const useAudioTrack = (room?: HookRoom) => {

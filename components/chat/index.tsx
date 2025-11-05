@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import ChatInput from "./input";
 import ChatBubble from "./chat-bubble";
 import ChatInitWithCredit from "./chatInit-with-credit";
-import GenerateGreetingText from "./generate-chat";
 
 import { useConversationMutation, useGetChatsMutation } from "@/services/conversation/mutation";
 import { useValidateUUID } from "@/services/validate/query";
@@ -13,6 +12,7 @@ import { useLivekitStore } from "@/store/livekit";
 import useConversationStore from "@/store/conversation";
 
 import { SESSION_CONVERSATION_ID } from "@/helper/storage";
+import GenerateChat from "./generate-chat";
 
 const Chat = () => {
     // ---------- 1️⃣ URL Params & Store State ----------
@@ -55,16 +55,14 @@ const Chat = () => {
             <div className="flex-1 overflow-y-auto scrollbar-hide">
                 {loadingType === "INIT" ? (
                     <ChatInitWithCredit room={room} />
-                ) : loadingType === "GREETING" ? (
-                    <GenerateGreetingText room={room} />
                 ) : (
                     messages.map((msg) => (
                         <ChatBubble key={String(msg.id)} {...msg} />
                     ))
                 )}
+                <GenerateChat room={room} />
             </div>
-
-            <ChatInput  />
+            <ChatInput />
         </div>
     );
 };

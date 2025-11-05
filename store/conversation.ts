@@ -3,8 +3,8 @@ import { ChatMessage } from "@/types/chat";
 import { create } from "zustand";
 
 interface ConversationStore {
-  greeding: DataReceivedProps;
-  setGreeding: (greeding: DataReceivedProps) => void;
+  greeting: DataReceivedProps;
+  setGreeting: (greeting: DataReceivedProps) => void;
 
   transcription: string;
   setTranscription: (transcription: string) => void;
@@ -17,12 +17,12 @@ interface ConversationStore {
 }
 
 const useConversationStore = create<ConversationStore>((set, get) => ({
-  greeding: {
+  greeting: {
     topic: null,
     message: "Hi there! Welcome to the chat.",
     timestamp: null,
   },
-  setGreeding: (greeding) => set({ greeding }),
+  setGreeting: (greeting) => set({ greeting }),
 
   transcription: "",
   setTranscription: (words) => {

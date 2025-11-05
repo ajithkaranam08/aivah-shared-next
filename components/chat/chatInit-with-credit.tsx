@@ -5,11 +5,11 @@ import { useChatInitListener } from '@/services/conversation/query';
 import { Room } from 'livekit-client';
 
 const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
-    const { greeding } = useConversationStore()
+    const { greeting } = useConversationStore()
     useChatInitListener(room);
-    return greeding.message ?
+    return greeting.message ?
         <div className='flex-1 flex justify-center items-center h-full'>
-            <LoaderFive text={greeding.message} />
+            <LoaderFive text={greeting.message} />
         </div>
         : null;
 }

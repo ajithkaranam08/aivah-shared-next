@@ -2,7 +2,7 @@ import useConversationStore from "@/store/conversation";
 import { useChatTranscription } from "@/services/conversation/query";
 import { Room } from "livekit-client";
 
-const GenerateGreedingText = ({ room }: { room: Room | null }) => {
+const GenerateChat = ({ room }: { room: Room | null }) => {
   const { transcription } = useConversationStore();
 
   useChatTranscription(room);
@@ -22,4 +22,4 @@ const GenerateGreedingText = ({ room }: { room: Room | null }) => {
   ) : null;
 };
 
-export default GenerateGreedingText;
+export default GenerateChat;
