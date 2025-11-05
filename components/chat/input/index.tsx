@@ -1,10 +1,12 @@
 import { useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AudioLinesIcon, MicIcon, PlusIcon } from "lucide-react";
+import { ArrowUpIcon, AudioLinesIcon, MicIcon, PlusIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
+import { useCreateChatMutation } from "@/services/conversation/mutation";
+import { useLivekitStore } from "@/store/livekit";
 import { ChatInputExpandTypes } from "@/types/chat";
 import { ChatFormType, chatFormSchema } from "@/zod-schema/chat";
 
@@ -14,6 +16,10 @@ import { TooltipInput } from "./tooltip";
 
 const ChatInput = () => {
   const containerRef = useRef<HTMLFormElement>(null);
+
+  const { room } = useLivekitStore();
+
+  const { mutateAsync } = useCreateChatMutation(room);
 
   const form = useForm<ChatFormType>({
     resolver: zodResolver(chatFormSchema),
@@ -43,6 +49,22 @@ const ChatInput = () => {
     }
   };
 
+  const onSubmit = async (data: ChatFormType) => {
+    await mutateAsync({
+      content: data.text,
+      id: String(new Date().getTime()),
+      sender: "user",
+      timestamp: new Date().toISOString(),
+    });
+    form.reset();
+    handleExpand(ChatInputExpandTypes.TEXT_EMPTY);
+    const chatExpanded = document.getElementById("chat-expanded");
+    if (chatExpanded) {
+      chatExpanded.innerHTML =
+        '<p data-placeholder="Ask anything" class="place-holder"></p>';
+    }
+  };
+
   return (
     <FormProvider {...form}>
       <form ref={containerRef} className="group/composer w-full">
@@ -66,9 +88,19 @@ const ChatInput = () => {
             <TooltipInput tooltipText="Voice input" variant="ghost">
               <MicIcon size={18} />
             </TooltipInput>
-            <TooltipInput tooltipText="Audio options">
-              <AudioLinesIcon size={18} />
-            </TooltipInput>
+
+            {form.formState.isValid ? (
+              <TooltipInput
+                tooltipText="Send message"
+                onClick={form.handleSubmit(onSubmit)}
+              >
+                <ArrowUpIcon size={18} />
+              </TooltipInput>
+            ) : (
+              <TooltipInput tooltipText="Audio options">
+                <AudioLinesIcon size={18} />
+              </TooltipInput>
+            )}
           </div>
         </div>
       </form>
