@@ -50,8 +50,8 @@ const CompanionEmbedId = () => {
       className="min-h-[200px] max-w-md border min-w-full rounded-3xl"
     >
       <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
-        <div className="flex h-full items-center justify-center p-6">
-          {/* <Experience modelUrl={data.details?.avatarUrl} chatId={data.details?.chatbotId} companionType={data.details?.avatarType} /> */}
+        <div className="flex h-full items-center justify-center">
+          <Experience modelUrl={data.details?.avatarUrl} chatId={data.details?.chatbotId} companionType={data.details?.avatarType} />
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
