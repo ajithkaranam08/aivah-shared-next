@@ -21,7 +21,7 @@ const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
   return (
     <div
       className={cn(
-        "group flex w-full",
+        "group flex w-full nth-last-2:not-[.no-class]:min-h-[calc(-248px+100dvh)]",
         sender === "user" ? "justify-end" : "justify-start"
       )}
     >

@@ -9,17 +9,16 @@ import {
 } from "@/services/conversation/mutation";
 import { useAudioTrack } from "@/services/conversation/query";
 import { useValidateUUID } from "@/services/validate/query";
+import { useVoiceModalStore } from "@/store/companion";
 import { useLivekitStore } from "@/store/livekit";
 
-import VoiceModal from "./voice-modal";
 import ChatMessage from "./message";
-import { useVoiceModalStore } from "@/store/companion";
+import VoiceModal from "./voice-modal";
 
 const Chat = () => {
   const { embedId } = useParams();
   const { connect, room, disconnect } = useLivekitStore();
-  const { voiceModalOpen } = useVoiceModalStore()
-
+  const { voiceModalOpen } = useVoiceModalStore();
 
   const { data: sessionData } = useValidateUUID(String(embedId));
   const { mutate: initConversation, isSuccess } = useConversationMutation();
@@ -30,11 +29,11 @@ const Chat = () => {
   useEffect(() => {
     initConversation(undefined, {
       onSuccess: () => {
-        if (sessionData) connect(sessionData, voiceModalOpen);
+        if (sessionData) connect(sessionData);
       },
     });
     return () => disconnect();
-  }, [sessionData, initConversation, connect, disconnect, voiceModalOpen]);
+  }, [sessionData, initConversation, connect, disconnect]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -43,13 +42,9 @@ const Chat = () => {
     }
   }, [isSuccess, getChats]);
 
-
-
   return (
-    <div className="flex h-full flex-col p-5 relative">
-      {!voiceModalOpen && (
-        <ChatMessage room={room} />
-      )}
+    <div className="relative flex h-full flex-col p-5">
+      {!voiceModalOpen && <ChatMessage room={room} />}
       <VoiceModal />
     </div>
   );

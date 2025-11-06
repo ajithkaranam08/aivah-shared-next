@@ -5,17 +5,14 @@ import envConfig from "@/config/env";
 import { SESSION_ID, SESSION_TOKEN } from "@/helper/storage";
 import { LivekitConnectionParams, LivekitResponse } from "@/types/livekit";
 
-export const connectToLiveKit = async (
-  {
-    knowledgeBaseId,
-    conversationId,
-    llmModelId,
-    voiceId,
-    voiceType,
-    sessionId,
-  }: LivekitConnectionParams,
-  isAudio?: boolean
-) => {
+export const connectToLiveKit = async ({
+  knowledgeBaseId,
+  conversationId,
+  llmModelId,
+  voiceId,
+  voiceType,
+  sessionId,
+}: LivekitConnectionParams) => {
   if (!knowledgeBaseId || !conversationId || !llmModelId || !voiceId) {
     throw new Error("Missing required parameters for LiveKit connection");
   }
@@ -57,48 +54,33 @@ export const connectToLiveKit = async (
     throw new Error(data.message || "Invalid LiveKit token response");
   }
 
-  let roomConfig: RoomOptions = {
+  const roomConfig: RoomOptions = {
     adaptiveStream: true,
     dynacast: true,
     disconnectOnPageLeave: true,
     publishDefaults: {
-      audioPreset: { maxBitrate: 32000 },
+      audioPreset: {
+        maxBitrate: 64000,
+        priority: "high",
+      },
+      simulcast: false,
+      stopMicTrackOnMute: true,
+    },
+
+    // Advanced connection options
+    stopLocalTrackOnUnpublish: true,
+    webAudioMix: true,
+
+    // Audio capture defaults for better quality
+    audioCaptureDefaults: {
+      autoGainControl: true,
+      echoCancellation: true,
+      noiseSuppression: true,
+      sampleRate: 48000,
+      sampleSize: 16,
+      channelCount: 1,
     },
   };
-
-  if (!isAudio) {
-    roomConfig = {
-      ...roomConfig,
-      adaptiveStream: true,
-      dynacast: true,
-
-      disconnectOnPageLeave: true,
-
-      // Advanced connection options
-      stopLocalTrackOnUnpublish: true,
-      webAudioMix: true,
-
-      // Audio capture defaults for better quality
-      audioCaptureDefaults: {
-        autoGainControl: true,
-        echoCancellation: true,
-        noiseSuppression: true,
-        sampleRate: 48000,
-        sampleSize: 16,
-        channelCount: 1,
-      },
-
-      // Enhanced publishing defaults
-      publishDefaults: {
-        audioPreset: {
-          maxBitrate: 64000,
-          priority: "high",
-        },
-        simulcast: false,
-        stopMicTrackOnMute: true,
-      },
-    };
-  }
 
   const room = new Room(roomConfig);
 
