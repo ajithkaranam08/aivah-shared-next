@@ -29,7 +29,7 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
     loadMore: () => () => {
       console.log("load more");
     },
-    count: messages.length,
+    count: 0,
   });
 
   const handleScrollBottom = () => {
@@ -61,7 +61,7 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
           <ArrowDown size={18} />
         </Button>
       )}
-      <ChatInput />
+      <ChatInput handleScrollBottom={handleScrollBottom} />
     </>
   );
 };

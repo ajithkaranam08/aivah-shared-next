@@ -15,7 +15,11 @@ import EditorInput from "./editor";
 import FileInput from "./file";
 import { TooltipInput } from "./tooltip";
 
-const ChatInput = () => {
+const ChatInput = ({
+  handleScrollBottom,
+}: {
+  handleScrollBottom: () => void;
+}) => {
   const { setVoiceModalOpen, voiceModalOpen } = useVoiceModalStore();
   const containerRef = useRef<HTMLFormElement>(null);
 
@@ -65,6 +69,7 @@ const ChatInput = () => {
       promptTextarea.innerHTML =
         '<p data-placeholder="Ask anything" class="place-holder"></p>';
     }
+    handleScrollBottom();
   };
 
   return (
