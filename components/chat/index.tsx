@@ -19,6 +19,7 @@ import GenerateChat from "./generate-chat";
 import ChatInput from "./input";
 import { ArrowDown } from "lucide-react";
 import { Button } from "../ui/button";
+import VoiceModal from "./voice-modal";
 
 const Chat = () => {
   const { embedId } = useParams();
@@ -77,6 +78,8 @@ const Chat = () => {
         <Button onClick={() => scrollRef.current?.scrollTo({ top: scrollRef.current?.scrollHeight, behavior: 'smooth' })} size={'icon'} variant={"secondary"} className="border border-accent absolute left-2/4 -translate-x-2/4 bottom-24 rounded-full not-hover:animate-bounce cursor-pointer"><ArrowDown size={18} /></Button>
       }
       <ChatInput />
+
+      <VoiceModal />
     </div>
   );
 };
