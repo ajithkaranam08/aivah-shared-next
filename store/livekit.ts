@@ -38,7 +38,6 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
     }
 
     const { room } = get();
-    console.log(room?.state);
     if (
       room &&
       room.state !== ConnectionState.Disconnected &&
