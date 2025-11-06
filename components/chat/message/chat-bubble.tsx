@@ -5,9 +5,9 @@ import { CopyCheck, CopyIcon } from "lucide-react";
 import { formatChatTimestamp } from "@/helper/date-time";
 import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 import { cn } from "@/lib/utils";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
+import { TooltipInput } from "../input/tooltip";
 
-import MarkdownRenderer from "../ui/markdown-renderer";
-import { TooltipInput } from "./input/tooltip";
 
 interface ChatBubbleProps {
   content: string;

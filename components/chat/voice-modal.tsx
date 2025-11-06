@@ -7,6 +7,7 @@ const VoiceModal = () => {
     const { voiceModalOpen, isRecording, setIsRecording, setVoiceModalOpen } = useVoiceModalStore()
     return (
         <AnimatePresence>
+
             {voiceModalOpen && (
                 <motion.div
                     initial={{ opacity: 0 }}

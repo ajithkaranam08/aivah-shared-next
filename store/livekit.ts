@@ -1,4 +1,4 @@
-import { RoomEvent } from "livekit-client";
+import { ConnectionState, RoomEvent } from "livekit-client";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -34,6 +34,16 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
   connect: async (data) => {
     if (!data?.details) {
       toast.error("Invalid embed ID or validation missing");
+      return;
+    }
+
+    const { room } = get();
+    console.log(room?.state);
+    if (
+      room &&
+      room.state !== ConnectionState.Disconnected &&
+      room.state !== ConnectionState.Reconnecting
+    ) {
       return;
     }
 
