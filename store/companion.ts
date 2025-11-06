@@ -28,3 +28,18 @@ export const useCompanionStore = create<CompanionState>((set) => ({
   setStopGeneration: (n) => set({ stopGeneration: n }),
   setConfigureConversation: (s) => set({ configureConversation: s }),
 }));
+
+interface VoiceModalState {
+  isRecording: boolean;
+  voiceModalOpen: boolean;
+
+  setIsRecording: (isRecording: boolean) => void;
+  setVoiceModalOpen: (voiceModalOpen: boolean) => void;
+}
+
+export const useVoiceModalStore = create<VoiceModalState>((set) => ({
+  isRecording: false,
+  voiceModalOpen: false,
+  setIsRecording: (isRecording) => set({ isRecording }),
+  setVoiceModalOpen: (voiceModalOpen) => set({ voiceModalOpen }),
+}));
