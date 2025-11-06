@@ -2,12 +2,12 @@ import React from "react";
 
 import { CopyCheck, CopyIcon } from "lucide-react";
 
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 import { formatChatTimestamp } from "@/helper/date-time";
 import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
 import { cn } from "@/lib/utils";
-import MarkdownRenderer from "@/components/ui/markdown-renderer";
-import { TooltipInput } from "../input/tooltip";
 
+import { TooltipInput } from "../input/tooltip";
 
 interface ChatBubbleProps {
   content: string;
@@ -21,7 +21,7 @@ const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
   return (
     <div
       className={cn(
-        "group flex w-full nth-last-2:not-[.no-class]:min-h-[calc(-248px+100dvh)]",
+        "group bubble-last-before-child flex w-full",
         sender === "user" ? "justify-end" : "justify-start"
       )}
     >

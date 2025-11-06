@@ -168,3 +168,7 @@ body {
 .animate-glow {
   animation: glow 5s ease-in-out infinite;
 }
+
+.bubble-last-before-child {
+  @apply nth-last-2:not-[.no-class]:min-h-[calc(-260px+100dvh)]
+}

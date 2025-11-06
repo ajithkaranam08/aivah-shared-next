@@ -20,16 +20,16 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { messages, transcription, greeting } = useConversationStore();
+  const { messages } = useConversationStore();
 
   const { isBottom } = useChatScroll({
-      chatRef: scrollRef,
-      bottomRef,
-      shouldLoadMore: false,
-      loadMore: () => () => {
-          console.log("load more");
-      },
-      count: messages.length,
+    chatRef: scrollRef,
+    bottomRef,
+    shouldLoadMore: false,
+    loadMore: () => () => {
+      console.log("load more");
+    },
+    count: messages.length,
   });
 
   const handleScrollBottom = () => {
@@ -41,10 +41,7 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
 
   return (
     <>
-      <div
-        ref={scrollRef}
-        className="scrollbar-hide flex-1 overflow-y-auto "
-      >
+      <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
         {messages.map((msg, index) => (
           <ChatBubble key={`${String(msg.id)}-${index}`} {...msg} />
         ))}
@@ -53,9 +50,17 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
 
         <div ref={bottomRef} />
       </div>
-      {!isBottom &&
-                <Button onClick={handleScrollBottom} size={'icon'} variant={"secondary"} className="border border-accent absolute left-2/4 -translate-x-2/4 bottom-24 rounded-full not-hover:animate-bounce cursor-pointer"> <ArrowDown size={18} /></Button>
-            }
+      {!isBottom && (
+        <Button
+          onClick={handleScrollBottom}
+          size={"icon"}
+          variant={"secondary"}
+          className="border-accent absolute bottom-24 left-2/4 -translate-x-2/4 cursor-pointer rounded-full border not-hover:animate-bounce"
+        >
+          {" "}
+          <ArrowDown size={18} />
+        </Button>
+      )}
       <ChatInput />
     </>
   );

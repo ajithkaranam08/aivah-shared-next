@@ -15,7 +15,7 @@ export const useChatScroll = ({
   shouldLoadMore,
   loadMore,
   count,
-  scrollThreshold = 150,
+  scrollThreshold = 450,
 }: ChatScrollProps) => {
   const [initialized, setInitialized] = useState(false);
   const [isBottom, setIsBottom] = useState(true);
