@@ -2,8 +2,8 @@ import { Room } from "livekit-client";
 
 import { useChatTranscription } from "@/services/conversation/query";
 import useConversationStore from "@/store/conversation";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
-import MarkdownRenderer from "../ui/markdown-renderer";
 
 const GenerateChat = ({ room }: { room: Room | null }) => {
   const { transcription } = useConversationStore();

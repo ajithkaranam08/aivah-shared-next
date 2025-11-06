@@ -32,8 +32,14 @@ const conversationAPi = {
     options?: ConnectOptions
   ) => apiFetch.post(`lk-session/sync-chat`, body, options),
 
-  getChats: (conversationId: number, parmas?: ApiRequestPageParams) => {
-    const queryParams = new URLSearchParams(parmas);
+  getChats: (conversationId: number, params?: ApiRequestPageParams) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, String(value));
+      }
+    });
     return apiFetch.get<ApiResponseWithChat>(
       `embed-share/conversation/${conversationId}/chat?${queryParams}`
     );

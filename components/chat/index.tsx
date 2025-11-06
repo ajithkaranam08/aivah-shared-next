@@ -1,33 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import { useParams } from "next/navigation";
 
 import { SESSION_CONVERSATION_ID } from "@/helper/storage";
-import { useChatScroll } from "@/hooks/use-chat-scroll";
 import {
   useConversationMutation,
   useGetChatsMutation,
 } from "@/services/conversation/mutation";
 import { useAudioTrack } from "@/services/conversation/query";
 import { useValidateUUID } from "@/services/validate/query";
-import useConversationStore from "@/store/conversation";
 import { useLivekitStore } from "@/store/livekit";
 
-import ChatBubble from "./chat-bubble";
-import ChatInitWithCredit from "./chatInit-with-credit";
-import GenerateChat from "./generate-chat";
-import ChatInput from "./input";
-import { ArrowDown } from "lucide-react";
-import { Button } from "../ui/button";
 import VoiceModal from "./voice-modal";
+import ChatMessage from "./message";
+import { useVoiceModalStore } from "@/store/companion";
 
 const Chat = () => {
   const { embedId } = useParams();
   const { connect, room, disconnect } = useLivekitStore();
-  const { messages, transcription, greeting } = useConversationStore();
+  const { voiceModalOpen } = useVoiceModalStore()
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   const { data: sessionData } = useValidateUUID(String(embedId));
   const { mutate: initConversation, isSuccess } = useConversationMutation();
@@ -38,47 +30,26 @@ const Chat = () => {
   useEffect(() => {
     initConversation(undefined, {
       onSuccess: () => {
-        if (sessionData) connect(sessionData);
+        if (sessionData) connect(sessionData, voiceModalOpen);
       },
     });
     return () => disconnect();
-  }, [sessionData, initConversation, connect, disconnect]);
+  }, [sessionData, initConversation, connect, disconnect, voiceModalOpen]);
 
   useEffect(() => {
     if (isSuccess) {
       const conversationId = Number(SESSION_CONVERSATION_ID.get());
-      if (conversationId) getChats({ conversationId, page: "1", limit: "200" });
+      if (conversationId) getChats({ conversationId, page: "1" });
     }
   }, [isSuccess, getChats]);
 
-  const { isBottom } = useChatScroll({
-    chatRef: scrollRef,
-    bottomRef,
-    shouldLoadMore: false,
-    loadMore: () => () => {
-      console.log("load more");
-    },
-    count: greeting.message.length || transcription?.length || messages.length || 0,
-  });
 
-  // ---------- 4️⃣ Render ----------
 
   return (
     <div className="flex h-full flex-col p-5 relative">
-      <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
-        {messages.map((msg, index) => (
-          <ChatBubble key={`${String(msg.id)}-${index}`} {...msg} />
-        ))}
-        <ChatInitWithCredit room={room} />
-        <GenerateChat room={room} />
-
-        <div ref={bottomRef} />
-      </div>
-      {!isBottom &&
-        <Button onClick={() => scrollRef.current?.scrollTo({ top: scrollRef.current?.scrollHeight, behavior: 'smooth' })} size={'icon'} variant={"secondary"} className="border border-accent absolute left-2/4 -translate-x-2/4 bottom-24 rounded-full not-hover:animate-bounce cursor-pointer"><ArrowDown size={18} /></Button>
-      }
-      <ChatInput />
-
+      {!voiceModalOpen && (
+        <ChatMessage room={room} />
+      )}
       <VoiceModal />
     </div>
   );
