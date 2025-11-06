@@ -44,7 +44,7 @@ const Chat = () => {
 
   return (
     <div className="relative flex h-full flex-col p-5">
-      {!voiceModalOpen && <ChatMessage room={room} />}
+      <ChatMessage room={room} />
       <VoiceModal />
     </div>
   );
