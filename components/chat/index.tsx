@@ -18,7 +18,6 @@ import VoiceModal from "./voice-modal";
 const Chat = () => {
   const { embedId } = useParams();
   const { connect, room, disconnect } = useLivekitStore();
-  const { voiceModalOpen } = useVoiceModalStore();
 
   const { data: sessionData } = useValidateUUID(String(embedId));
   const { mutate: initConversation, isSuccess } = useConversationMutation();
