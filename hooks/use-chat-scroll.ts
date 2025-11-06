@@ -18,6 +18,7 @@ export const useChatScroll = ({
   scrollThreshold = 150,
 }: ChatScrollProps) => {
   const [initialized, setInitialized] = useState(false);
+  const [isBottom, setIsBottom] = useState(false);
 
   // Handle infinite scroll (load more when top reached)
   useEffect(() => {
@@ -27,6 +28,15 @@ export const useChatScroll = ({
     const handleScroll = () => {
       if (container.scrollTop === 0 && shouldLoadMore) {
         loadMore();
+      }
+
+      if (
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - scrollThreshold
+      ) {
+        setIsBottom(true);
+      } else {
+        setIsBottom(false);
       }
     };
 
@@ -60,6 +70,8 @@ export const useChatScroll = ({
       }, 100);
     }
   }, [count, chatRef, bottomRef, initialized, scrollThreshold]);
+
+  return { isBottom };
 };
 
 /**

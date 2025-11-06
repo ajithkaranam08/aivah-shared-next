@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 
 import { SESSION_CONVERSATION_ID } from "@/helper/storage";
-import { useAutoScroll, useChatScroll } from "@/hooks/use-chat-scroll";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 import {
   useConversationMutation,
   useGetChatsMutation,
@@ -17,6 +17,8 @@ import ChatBubble from "./chat-bubble";
 import ChatInitWithCredit from "./chatInit-with-credit";
 import GenerateChat from "./generate-chat";
 import ChatInput from "./input";
+import { ArrowDown } from "lucide-react";
+import { Button } from "../ui/button";
 
 const Chat = () => {
   const { embedId } = useParams();
@@ -44,11 +46,11 @@ const Chat = () => {
   useEffect(() => {
     if (isSuccess) {
       const conversationId = Number(SESSION_CONVERSATION_ID.get());
-      if (conversationId) getChats({ conversationId, page: "1", limit: "100" });
+      if (conversationId) getChats({ conversationId, page: "1", limit: "200" });
     }
   }, [isSuccess, getChats]);
 
-  useChatScroll({
+  const { isBottom } = useChatScroll({
     chatRef: scrollRef,
     bottomRef,
     shouldLoadMore: false,
@@ -61,7 +63,7 @@ const Chat = () => {
   // ---------- 4️⃣ Render ----------
 
   return (
-    <div className="flex h-full flex-col p-5">
+    <div className="flex h-full flex-col p-5 relative">
       <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
         {messages.map((msg, index) => (
           <ChatBubble key={`${String(msg.id)}-${index}`} {...msg} />
@@ -71,7 +73,9 @@ const Chat = () => {
 
         <div ref={bottomRef} />
       </div>
-
+      {!isBottom &&
+        <Button onClick={() => scrollRef.current?.scrollTo({ top: scrollRef.current?.scrollHeight, behavior: 'smooth' })} size={'icon'} variant={"secondary"} className="border border-accent absolute left-2/4 -translate-x-2/4 bottom-24 rounded-full not-hover:animate-bounce cursor-pointer"><ArrowDown size={18} /></Button>
+      }
       <ChatInput />
     </div>
   );
