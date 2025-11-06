@@ -41,8 +41,8 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
                 {messages.map((msg, index) => (
                     <ChatBubble key={`${String(msg.id)}-${index}`} {...msg} />
                 ))}
-                <ChatInitWithCredit room={room} />
                 <GenerateChat room={room} />
+                <ChatInitWithCredit room={room} />
 
                 <div ref={bottomRef} />
             </div>

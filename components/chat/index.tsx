@@ -13,10 +13,12 @@ import { useLivekitStore } from "@/store/livekit";
 
 import VoiceModal from "./voice-modal";
 import ChatMessage from "./message";
+import { useVoiceModalStore } from "@/store/companion";
 
 const Chat = () => {
   const { embedId } = useParams();
   const { connect, room, disconnect } = useLivekitStore();
+  const { voiceModalOpen } = useVoiceModalStore()
 
 
   const { data: sessionData } = useValidateUUID(String(embedId));
@@ -28,11 +30,11 @@ const Chat = () => {
   useEffect(() => {
     initConversation(undefined, {
       onSuccess: () => {
-        if (sessionData) connect(sessionData);
+        if (sessionData) connect(sessionData, voiceModalOpen);
       },
     });
     return () => disconnect();
-  }, [sessionData, initConversation, connect, disconnect]);
+  }, [sessionData, initConversation, connect, disconnect, voiceModalOpen]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -45,7 +47,9 @@ const Chat = () => {
 
   return (
     <div className="flex h-full flex-col p-5 relative">
-      <ChatMessage room={room} />
+      {!voiceModalOpen && (
+        <ChatMessage room={room} />
+      )}
       <VoiceModal />
     </div>
   );
