@@ -49,7 +49,7 @@ export default function VoiceModal() {
           className="bg-secondary absolute inset-0 flex flex-col items-center justify-center gap-5"
         >
           <section className="flex flex-1 items-center justify-center">
-            <GlowingLinear isActive={isListening} />
+            <GlowingLinear isActive={false} />
           </section>
 
           <motion.div

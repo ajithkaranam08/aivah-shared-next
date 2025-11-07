@@ -138,6 +138,10 @@ body {
   position: relative;
 }
 
+.bubble-last-before-child {
+  @apply nth-last-2:not-[.no-class]:min-h-[calc(-260px+100dvh)];
+}
+
 @keyframes glow {
   0% {
     background-position: 0% 50%;
@@ -169,6 +173,27 @@ body {
   animation: glow 5s ease-in-out infinite;
 }
 
-.bubble-last-before-child {
-  @apply nth-last-2:not-[.no-class]:min-h-[calc(-260px+100dvh)]
+@keyframes scale-ping {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.025);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  75% {
+    transform: scale(1.075);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-scale-ping {
+  animation: scale-ping 1s ease-in-out infinite;
 }

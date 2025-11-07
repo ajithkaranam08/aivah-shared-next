@@ -9,7 +9,6 @@ import {
 } from "@/services/conversation/mutation";
 import { useAudioTrack } from "@/services/conversation/query";
 import { useValidateUUID } from "@/services/validate/query";
-import { useVoiceModalStore } from "@/store/companion";
 import { useLivekitStore } from "@/store/livekit";
 
 import ChatMessage from "./message";
