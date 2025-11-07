@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
+
 import envConfig from "@/config/env";
 
 const SPEECH_KEY = envConfig.NEXT_PUBLIC_SPEECH_KEY;
 const SPEECH_REGION = envConfig.NEXT_PUBLIC_SPEECH_REGION;
 
-export const useSpeechToText = (languages = ["en-US", "ta-IN", "hi-IN"]) => {
+export const useSpeechToText = (languages = ["en-US"]) => {
   const recognizerRef = useRef<sdk.SpeechRecognizer | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [liveText, setLiveText] = useState("");
@@ -14,10 +16,18 @@ export const useSpeechToText = (languages = ["en-US", "ta-IN", "hi-IN"]) => {
   /** ✅ Creates a fresh recognizer each time (prevents disposed object error) */
   const createRecognizer = useCallback(() => {
     try {
-      const config = sdk.SpeechConfig.fromSubscription(SPEECH_KEY, SPEECH_REGION);
-      const autoDetect = sdk.AutoDetectSourceLanguageConfig.fromLanguages(languages);
+      const config = sdk.SpeechConfig.fromSubscription(
+        SPEECH_KEY,
+        SPEECH_REGION
+      );
+      const autoDetect =
+        sdk.AutoDetectSourceLanguageConfig.fromLanguages(languages);
       const audio = sdk.AudioConfig.fromDefaultMicrophoneInput();
-      const recognizer = sdk.SpeechRecognizer.FromConfig(config, autoDetect, audio);
+      const recognizer = sdk.SpeechRecognizer.FromConfig(
+        config,
+        autoDetect,
+        audio
+      );
 
       recognizer.recognizing = (_, e) => {
         if (e.result.reason === sdk.ResultReason.RecognizingSpeech) {
@@ -89,8 +99,9 @@ export const useSpeechToText = (languages = ["en-US", "ta-IN", "hi-IN"]) => {
     try {
       await checkMicPermission();
 
-      // Create a new recognizer instance every start
-      createRecognizer();
+      new Promise((resolve) => {
+        resolve(createRecognizer());
+      });
 
       await new Promise<void>((resolve, reject) => {
         recognizerRef.current?.startContinuousRecognitionAsync(resolve, reject);
@@ -121,5 +132,10 @@ export const useSpeechToText = (languages = ["en-US", "ta-IN", "hi-IN"]) => {
     }
   };
 
-  return { isListening, liveText, finalText, start, stop };
+  const clearText = () => {
+    setLiveText("");
+    setFinalText("");
+  };
+
+  return { isListening, liveText, finalText, start, stop, clearText };
 };

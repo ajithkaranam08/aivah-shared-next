@@ -10,83 +10,104 @@ import { useVoiceModalStore } from "@/store/companion";
 
 import { Button } from "../ui/button";
 import GlowingLinear from "../ui/glowing-circle";
+import { useLivekitStore } from "@/store/livekit";
+import { useEffect } from "react";
+import { useCreateChatMutation } from "@/services/conversation/mutation";
+import useConversationStore from "@/store/conversation";
 
 export default function VoiceModal() {
-  const { theme } = useTheme();
-  const { voiceModalOpen, setVoiceModalOpen, setIsRecording, isRecording } =
-    useVoiceModalStore();
+    const { theme } = useTheme();
+    const { voiceModalOpen, setVoiceModalOpen, setIsRecording, isRecording } =
+        useVoiceModalStore();
 
-  const { liveText, finalText, isListening, start, stop } = useSpeechToText();
 
-  const handleRecordToggle = async () => {
-    try {
-      if (!isListening) {
-        await start();
-        setIsRecording(true);
-      } else {
+    const { liveText, finalText, isListening, start, stop, clearText } = useSpeechToText();
+    const { room } = useLivekitStore()
+    const { mutate, isPending } = useCreateChatMutation(room);
+    const { transcription, loadingType } = useConversationStore();
+
+
+    const handleRecordToggle = async () => {
+        try {
+            if (!isListening) {
+                await start();
+                setIsRecording(true);
+            } else {
+                await stop();
+                setIsRecording(false);
+            }
+        } catch (err) {
+            toast.error((err as Error).message || "Microphone access denied");
+        }
+    };
+
+
+    const handleStop = async () => {
         await stop();
         setIsRecording(false);
-      }
-    } catch (err) {
-      toast.error((err as Error).message || "Microphone access denied");
-    }
-  };
+        setVoiceModalOpen(false);
+    };
 
-  const handleStop = async () => {
-    await stop();
-    setIsRecording(false);
-    setVoiceModalOpen(false);
-  };
+    useEffect(() => {
+        if (!room || !finalText || transcription || isPending || !isRecording) return;
 
-  return (
-    <AnimatePresence>
-      {voiceModalOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-secondary absolute inset-0 flex flex-col items-center justify-center gap-5"
-        >
-          <section className="flex flex-1 items-center justify-center">
-            <GlowingLinear isActive={false} />
-          </section>
+        mutate({
+            content: finalText,
+            id: String(new Date().getTime()),
+            sender: "user",
+            timestamp: new Date().toISOString(),
+        }, { onSuccess: () => clearText() });
 
-          <motion.div
-            className="text-primary/80 min-h-[60px] px-6 text-center text-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            {liveText || finalText || "Start speaking..."}
-          </motion.div>
+    }, [finalText, mutate, clearText, room, transcription, isPending, isRecording])
+    return (
+        <AnimatePresence>
+            {voiceModalOpen && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-secondary absolute inset-0 flex flex-col items-center justify-center gap-5"
+                >
+                    <section className="flex flex-1 items-center justify-center">
+                        <GlowingLinear isActive={loadingType === "GENERATING"} />
+                    </section>
 
-          <div className="flex gap-5 py-5">
-            <Button
-              size="icon-lg"
-              variant={
-                isRecording
-                  ? theme === "dark"
-                    ? "outline"
-                    : "default"
-                  : "destructive"
-              }
-              className="size-14 cursor-pointer rounded-full"
-              onClick={handleRecordToggle}
-            >
-              {isRecording ? <MicIcon size={40} /> : <MicOffIcon size={40} />}
-            </Button>
+                    <motion.div
+                        className="text-primary/80 min-h-[60px] px-6 text-center text-lg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                    >
+                        {transcription || liveText || finalText || "Start speaking..."}
+                    </motion.div>
 
-            <Button
-              size="icon-lg"
-              variant={theme === "dark" ? "outline" : "default"}
-              className="size-14 cursor-pointer rounded-full"
-              onClick={handleStop}
-            >
-              <XIcon size={18} />
-            </Button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+                    <div className="flex gap-5 py-5">
+                        <Button
+                            size="icon-lg"
+                            variant={
+                                isRecording
+                                    ? theme === "dark"
+                                        ? "outline"
+                                        : "default"
+                                    : "destructive"
+                            }
+                            className="size-14 cursor-pointer rounded-full"
+                            onClick={handleRecordToggle}
+                        >
+                            {isRecording ? <MicIcon size={40} /> : <MicOffIcon size={40} />}
+                        </Button>
+
+                        <Button
+                            size="icon-lg"
+                            variant={theme === "dark" ? "outline" : "default"}
+                            className="size-14 cursor-pointer rounded-full"
+                            onClick={handleStop}
+                        >
+                            <XIcon size={18} />
+                        </Button>
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
 }
