@@ -12,7 +12,7 @@ interface LivekitState {
   room: LivekitConnectionResult["room"] | null;
   isConnecting: boolean;
   error: string | null;
-  connect: (data: ChatbotDetails, isAudio?: boolean) => Promise<void>;
+  connect: (data: ChatbotDetails) => Promise<void>;
   disconnect: () => void;
   reset: () => void;
   config: {
@@ -31,7 +31,7 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
     url: "",
   },
 
-  connect: async (data, isAudio) => {
+  connect: async (data) => {
     if (!data?.details) {
       toast.error("Invalid embed ID or validation missing");
       return;
@@ -61,8 +61,7 @@ export const useLivekitStore = create<LivekitState>((set, get) => ({
           voiceId: String(voiceSetup.voiceSetup),
           voiceType: voiceSetup.voiceType,
           sessionId,
-        },
-        isAudio
+        }
       );
 
       connection.room.on(RoomEvent.Connected, () => {

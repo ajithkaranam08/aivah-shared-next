@@ -190,7 +190,7 @@ export const LoaderFive = ({ text }: { text: string }) => {
           className="inline-block"
           initial={{ scale: 1, opacity: 0.5 }}
           animate={{
-            scale: [1, 1.1, 1],
+            // scale: [1, 1.1, 1],
             textShadow: [
               "0 0 0 var(--shadow-color)",
               "0 0 1px var(--shadow-color)",

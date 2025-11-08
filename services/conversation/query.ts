@@ -102,7 +102,7 @@ export const useChatTranscription = (room: HookRoom) => {
         handleEvent().setTranscription("");
         handleEvent().setLoadingType("NONE");
       } else {
-        handleEvent().setLoadingType("GREETING");
+        handleEvent().setLoadingType("GENERATING");
         const text = transcription.map((segment) => segment.text).join(" ");
         handleEvent().setTranscription(text);
       }

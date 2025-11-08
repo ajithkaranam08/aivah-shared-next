@@ -11,7 +11,7 @@ const GenerateChat = ({ room }: { room: Room | null }) => {
   useChatTranscription(room);
 
   return transcription?.length ? (
-    <div className={"group flex w-full justify-start"}>
+    <div className={"group flex w-full justify-start bubble-last-before-child"}>
       <div className={"flex max-w-[80%] flex-col items-start gap-1"}>
         <section
           className={
