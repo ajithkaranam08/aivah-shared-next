@@ -20,7 +20,7 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { messages } = useConversationStore();
+  const messages = useConversationStore((s) => s.messages);
 
   const { isBottom } = useChatScroll({
     chatRef: scrollRef,
@@ -43,7 +43,7 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
     <>
       <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
         {messages.map((msg, index) => (
-          <ChatBubble key={`${String(msg.id)}-${index}`} {...msg} />
+          <ChatBubble key={`${String(msg.chatId)}-${index}`} {...msg} />
         ))}
         <GenerateChat room={room} />
         <ChatInitWithCredit room={room} />
@@ -57,7 +57,6 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
           variant={"secondary"}
           className="border-accent absolute bottom-24 left-2/4 -translate-x-2/4 cursor-pointer rounded-full border not-hover:animate-bounce"
         >
-          {" "}
           <ArrowDown size={18} />
         </Button>
       )}

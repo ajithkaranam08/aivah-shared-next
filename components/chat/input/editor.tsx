@@ -75,19 +75,38 @@ const EditorInput = ({
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    const html = text
-      .split(/\r?\n/)
-      .map((line) => `<p>${line || "<br>"}</p>`)
-      .join("");
-    document.execCommand("insertHTML", false, html);
+
+    const lastItem = e.clipboardData.items[e.clipboardData.items.length - 1];
+    if (lastItem.kind === "file") {
+      const file = lastItem.getAsFile();
+      if (file && file.type.startsWith("image/")) {
+        const url = URL.createObjectURL(file);
+        form.setValue("fileUrl", url);
+        form.setValue("file", file);
+      }
+    } else {
+      const text = e.clipboardData.getData("text/plain");
+      const html = text
+        .split(/\r?\n/)
+        .map((line) => `<p>${line || "<br>"}</p>`)
+        .join("");
+      document.execCommand("insertHTML", false, html);
+    }
   };
 
   return (
     <div className="-my-2.5 flex min-h-14 items-center overflow-x-hidden px-1.5 [grid-area:primary] group-data-expanded/composer:mb-0 group-data-expanded/composer:px-2.5">
-      <div className="_prosemirror-parent_1dsxi_2 text-token-text-primary default-browser vertical-scroll-fade-mask relative max-h-52 flex-1 overflow-auto [scrollbar-width:thin]">
+      <div className="relative max-h-52 flex-1 overflow-auto [scrollbar-width:thin]">
         <Controller
           control={form.control}
           name="text"
@@ -96,6 +115,8 @@ const EditorInput = ({
               onInput={(e) => handleInput(e, field.onChange)}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
               ref={editorRef}
               suppressContentEditableWarning
               contentEditable

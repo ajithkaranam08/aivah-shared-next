@@ -1,18 +1,23 @@
 import { useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpIcon, AudioLinesIcon, MicIcon, PlusIcon } from "lucide-react";
+import { ArrowUpIcon, AudioLinesIcon, MicIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
-import { useCreateChatMutation } from "@/services/conversation/mutation";
+import {
+  useChatStopMutation,
+  useCreateChatMutation,
+} from "@/services/conversation/mutation";
 import { useVoiceModalStore } from "@/store/companion";
+import useConversationStore from "@/store/conversation";
 import { useLivekitStore } from "@/store/livekit";
 import { ChatInputExpandTypes } from "@/types/chat";
 import { ChatFormType, chatFormSchema } from "@/zod-schema/chat";
 
 import EditorInput from "./editor";
 import FileInput from "./file";
+import ImagePreviewInput from "./image-preview";
 import { TooltipInput } from "./tooltip";
 
 const ChatInput = ({
@@ -22,10 +27,12 @@ const ChatInput = ({
 }) => {
   const { setVoiceModalOpen, voiceModalOpen } = useVoiceModalStore();
   const containerRef = useRef<HTMLFormElement>(null);
+  const loadingType = useConversationStore((s) => s.loadingType);
 
   const { room } = useLivekitStore();
 
   const { mutateAsync } = useCreateChatMutation(room);
+  const { mutateAsync: stopChat } = useChatStopMutation(room);
 
   const form = useForm<ChatFormType>({
     resolver: zodResolver(chatFormSchema),
@@ -56,12 +63,24 @@ const ChatInput = ({
   };
 
   const onSubmit = async (data: ChatFormType) => {
+    if (data.fileUrl) {
+      await mutateAsync({
+        content: data.text,
+        chatId: new Date().getTime(),
+        sender: "user",
+        timestamp: new Date().toISOString(),
+        file: data.file,
+        image_url: data.fileUrl,
+      });
+    }
+
     await mutateAsync({
       content: data.text,
-      id: String(new Date().getTime()),
+      chatId: new Date().getTime(),
       sender: "user",
       timestamp: new Date().toISOString(),
     });
+
     form.reset();
     handleExpand(ChatInputExpandTypes.TEXT_EMPTY);
     const promptTextarea = document.getElementById("prompt-textarea");
@@ -75,8 +94,6 @@ const ChatInput = ({
   return (
     <FormProvider {...form}>
       <form ref={containerRef} className="group/composer w-full">
-        <FileInput />
-
         <div
           id="chat-expanded"
           className={cn(
@@ -86,9 +103,7 @@ const ChatInput = ({
           <EditorInput onExpand={handleExpand} onSubmit={onSubmit} />
 
           <div className="origin-[50%_50%] transform-none [grid-area:leading]">
-            <TooltipInput tooltipText="Add more options" variant={"ghost"}>
-              <PlusIcon size={18} />
-            </TooltipInput>
+            <FileInput />
           </div>
 
           <div className="flex items-center gap-2 [grid-area:trailing]">
@@ -103,6 +118,10 @@ const ChatInput = ({
               >
                 <ArrowUpIcon size={18} />
               </TooltipInput>
+            ) : loadingType === "GENERATING" ? (
+              <TooltipInput tooltipText="Stop" onClick={() => stopChat()}>
+                <div className="bg-accent size-3" />
+              </TooltipInput>
             ) : (
               <TooltipInput
                 tooltipText="Audio options"
@@ -111,6 +130,10 @@ const ChatInput = ({
                 <AudioLinesIcon size={18} />
               </TooltipInput>
             )}
+          </div>
+
+          <div className="-mx-2.5 -mt-2.5 mb-2.5 flex origin-[50%_50%] transform-none flex-col [grid-area:header]">
+            <ImagePreviewInput />
           </div>
         </div>
       </form>

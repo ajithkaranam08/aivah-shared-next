@@ -5,10 +5,13 @@ export enum ChatInputExpandTypes {
 }
 
 export interface ChatMessage {
-  id: string;
+  chatId: number;
   sender: "user" | "bot";
-  content: string;
+  content?: string;
   timestamp: string | Date;
+  image_url?: string;
+  video_url?: string;
+  file?: File;
 }
 
 export interface ChatResponse {
@@ -19,6 +22,8 @@ export interface ChatResponse {
   isAttended: number;
   dateTime: string;
   isLike: number;
+  imagePath?: string;
+  videoPath?: string;
 }
 
 export interface ChatRequest {

@@ -7,7 +7,7 @@ import { ipAddress } from "@/lib/utils";
 import { useCompanionStore } from "@/store/companion";
 import useConversationStore from "@/store/conversation";
 import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
-import { ChatMessage, ChatRequest } from "@/types/chat";
+import { ChatMessage } from "@/types/chat";
 
 import conversationAPi, { ConversationApiProps } from "./api";
 
@@ -72,10 +72,12 @@ export const useGetChatsMutation = () => {
     },
     onSuccess: (values) => {
       const messages: ChatMessage[] = values.chats.map((msg) => ({
-        id: String(msg.chatId),
+        chatId: msg.chatId,
         sender: msg.userSessionId ? "user" : "bot",
         content: msg.chat,
         timestamp: new Date(msg.dateTime),
+        image_url: msg.imagePath,
+        video_url: msg.videoPath,
       }));
       setMessages(messages.reverse());
     },
@@ -87,9 +89,16 @@ export const useCreateChatMutation = (room: Room | null) => {
   return useMutation<unknown, Error, ChatMessage>({
     mutationFn: async (body) => {
       if (room) {
-        room?.localParticipant.sendText(body.content, {
-          topic: "lk.chat",
-        });
+        if (body.file) {
+          room?.localParticipant.sendFile(body.file, {
+            mimeType: body.file.type,
+            topic: "image-upload",
+          });
+        } else if (body.content) {
+          room?.localParticipant.sendText(body.content, {
+            topic: "lk.chat",
+          });
+        }
       }
       return true;
     },
@@ -98,6 +107,19 @@ export const useCreateChatMutation = (room: Room | null) => {
       if (room) {
         setMessages(values);
       }
+    },
+  });
+};
+
+export const useChatStopMutation = (room: Room | null) => {
+  return useMutation<unknown, Error, void>({
+    mutationFn: async () => {
+      if (room) {
+        room?.localParticipant.sendText("stop", {
+          topic: "lk.stop",
+        });
+      }
+      return true;
     },
   });
 };
