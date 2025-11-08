@@ -10,7 +10,9 @@ export interface ConversationApiProps {
   syncChat: {
     chat: string;
     conversationId: number;
-    chatType: "normal";
+    chatType: "normal" | "image" | "video";
+    imagePath?: string;
+    videoPath?: string;
   };
 }
 
@@ -41,7 +43,7 @@ const conversationAPi = {
       }
     });
     return apiFetch.get<ApiResponseWithChat>(
-      `embed-share/conversation/${conversationId}/chat?${queryParams}`
+      `embed-share/conversation/${conversationId}/chat?${queryParams}`, {revalidate: false}
     );
   },
 };

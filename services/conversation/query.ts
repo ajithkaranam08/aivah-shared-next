@@ -17,6 +17,8 @@ export interface DataReceivedProps {
   topic: "message" | null;
   message: string;
   timestamp: number | null;
+  image_url?: string ;
+  video_url?: string ;
 }
 
 type HookRoom = LivekitConnectionResult["room"] | null;
@@ -30,13 +32,17 @@ export const conversationKeys = {
   ],
 };
 
-export const useChatInitListener = (room: HookRoom) => {
-  const { setGreeting, setLoadingType } = useConversationStore();
+export const useChatDateReceived = (room: HookRoom) => {
+  const { setGreeting, setLoadingType, setMessages } = useConversationStore();
+  const { mutate: syncChat } = useSyncChatMutation();
+  const coonversationId = SESSION_CONVERSATION_ID.get();
 
   const handleEvent = useEffectEvent(() => {
     return {
       setGreeting,
       setLoadingType,
+      setMessages,
+      syncChat,
     };
   });
 
@@ -46,8 +52,28 @@ export const useChatInitListener = (room: HookRoom) => {
       const textDecoder = new TextDecoder();
       const dataString = textDecoder.decode(data);
       const jsonData = JSON.parse(dataString) as DataReceivedProps;
+      console.log("Data received in hook:", jsonData);
       handleEvent().setGreeting(jsonData);
       handleEvent().setLoadingType("INIT");
+      const media = jsonData.image_url || jsonData.video_url;
+      const isImage = Boolean(jsonData.image_url);
+      if (media && coonversationId) {
+        handleEvent().setMessages({
+          content: jsonData.message,
+          sender: "bot",
+          timestamp: new Date(jsonData.timestamp || Date.now()),
+          chatId: new Date().getTime(),
+          ...(isImage ? { image_url: jsonData.image_url } : {}),
+          ...(!isImage ? { video_url: jsonData.video_url } : {}),
+        });
+        handleEvent().syncChat({
+          chat: '',
+          conversationId: Number(coonversationId),
+          chatType: isImage ? "image" : "video",
+          ...(isImage ? { imagePath: jsonData.image_url } : {}),
+          ...(!isImage ? { videoPath: jsonData.video_url } : {}),
+        });
+      }
     };
 
     room.on(RoomEvent.DataReceived, handleReceive);
@@ -55,7 +81,7 @@ export const useChatInitListener = (room: HookRoom) => {
     return () => {
       room.off(RoomEvent.DataReceived, handleReceive);
     };
-  }, [room]);
+  }, [coonversationId, room]);
 };
 
 export const useChatTranscription = (room: HookRoom) => {
@@ -91,7 +117,7 @@ export const useChatTranscription = (room: HookRoom) => {
           content: isFinal.text,
           sender: "bot",
           timestamp: new Date(isFinal.lastReceivedTime),
-          id: isFinal.id,
+          chatId: new Date().getTime(),
         });
         handleEvent().syncChat({
           chat: isFinal.text,

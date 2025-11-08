@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpIcon, AudioLinesIcon, MicIcon, PlusIcon } from "lucide-react";
+import { ArrowUpIcon, AudioLinesIcon, MicIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ import { ChatFormType, chatFormSchema } from "@/zod-schema/chat";
 
 import EditorInput from "./editor";
 import FileInput from "./file";
+import ImagePreviewInput from "./image-preview";
 import { TooltipInput } from "./tooltip";
 
 const ChatInput = ({
@@ -58,7 +59,7 @@ const ChatInput = ({
   const onSubmit = async (data: ChatFormType) => {
     await mutateAsync({
       content: data.text,
-      id: String(new Date().getTime()),
+      chatId: new Date().getTime(),
       sender: "user",
       timestamp: new Date().toISOString(),
     });
@@ -75,8 +76,6 @@ const ChatInput = ({
   return (
     <FormProvider {...form}>
       <form ref={containerRef} className="group/composer w-full">
-        <FileInput />
-
         <div
           id="chat-expanded"
           className={cn(
@@ -86,9 +85,7 @@ const ChatInput = ({
           <EditorInput onExpand={handleExpand} onSubmit={onSubmit} />
 
           <div className="origin-[50%_50%] transform-none [grid-area:leading]">
-            <TooltipInput tooltipText="Add more options" variant={"ghost"}>
-              <PlusIcon size={18} />
-            </TooltipInput>
+            <FileInput />
           </div>
 
           <div className="flex items-center gap-2 [grid-area:trailing]">
@@ -111,6 +108,10 @@ const ChatInput = ({
                 <AudioLinesIcon size={18} />
               </TooltipInput>
             )}
+          </div>
+
+          <div className="-mx-2.5 -mt-2.5 mb-2.5 flex origin-[50%_50%] transform-none flex-col [grid-area:header]">
+            <ImagePreviewInput />
           </div>
         </div>
       </form>

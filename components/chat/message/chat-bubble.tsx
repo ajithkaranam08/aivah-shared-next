@@ -1,23 +1,24 @@
 import React from "react";
 
-import { CopyCheck, CopyIcon } from "lucide-react";
+import { CopyCheck, CopyIcon, DownloadIcon, EyeIcon } from "lucide-react";
 
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
 import { formatChatTimestamp } from "@/helper/date-time";
 import { useCopyToClipboard } from "@/hooks/use-copy-clipboard";
-import { cn } from "@/lib/utils";
+import { cn, downloadFile, openUrlInNewTab } from "@/lib/utils";
 
 import { TooltipInput } from "../input/tooltip";
+import { ChatMessage } from "@/types/chat";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
-interface ChatBubbleProps {
-  content: string;
-  sender: "user" | "bot";
-  timestamp: string | Date;
-}
 
-const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
+
+const ChatBubble = ({ content, sender, timestamp , image_url, video_url, chatId}: ChatMessage) => {
   const { copiedKey, copy } = useCopyToClipboard();
   const formattedTime = formatChatTimestamp(timestamp);
+
+
   return (
     <div
       className={cn(
@@ -31,6 +32,36 @@ const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
           sender === "user" ? "items-end" : "items-start"
         )}
       >
+        {image_url &&
+          <section className="rounded-lg group/image relative overflow-hidden max-w-max bg-red-400">
+            <Image src={image_url} alt={`generate-image-${chatId}`} width={200} height={200} />
+            <div className="absolute  top-0 right-0 size-full flex-center gap-2 bg-black/25 opacity-0 group-hover/image:opacity-100 transition-opacity">
+              <Button size={"icon-sm"} variant={"ghost"} className="cursor-pointer text-white" onClick={() => openUrlInNewTab(image_url)}>
+                <EyeIcon size={18}  />
+              </Button>
+              <Button size={"icon-sm"} variant={"ghost"} className="cursor-pointer text-white" onClick={() => downloadFile(image_url, `image-${chatId}.png`)}>
+                <DownloadIcon size={18} />
+              </Button>
+            </div>
+          </section>
+        }
+
+        {video_url &&
+          <section className="rounded-lg group/video relative overflow-hidden max-w-max bg-red-400">
+            <video src={video_url} width={200} height={200} />
+            <div className="absolute top-0 right-0 size-full flex-center gap-2 bg-black/25 opacity-0 group-hover/video:opacity-100 transition-opacity">
+              <Button size={"icon-sm"} variant={"ghost"} className="cursor-pointer text-white" onClick={() => openUrlInNewTab(video_url)}>
+                <EyeIcon size={18} />
+              </Button>
+              <Button size={"icon-sm"} variant={"ghost"} className="cursor-pointer text-white" onClick={() => downloadFile(video_url, `video-${chatId}.mp4`)}>
+                <DownloadIcon size={18} />
+              </Button>
+            </div>
+          </section>
+        }
+            
+
+        {content && 
         <section
           className={cn(
             `max-w-full rounded-tl-3xl rounded-tr-3xl p-4 wrap-break-word`,
@@ -44,6 +75,7 @@ const ChatBubble = ({ content, sender, timestamp }: ChatBubbleProps) => {
         >
           <MarkdownRenderer content={content} />
         </section>
+        }
 
         <section
           className={cn(

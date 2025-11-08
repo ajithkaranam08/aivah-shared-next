@@ -7,7 +7,7 @@ export type ConnectOptions = {
   revalidate?: number | false;
 } & RequestInit;
 
-async function connect<T = any>(
+async function connect<T = unknown>(
   endpoint: string,
   options: ConnectOptions = {}
 ): Promise<T> {
@@ -52,7 +52,7 @@ async function connect<T = any>(
     }
 
     return (await res.json()) as T;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("API Fetch Error:", error);
     throw error;
   }
@@ -61,9 +61,9 @@ async function connect<T = any>(
 export const apiFetch = {
   get: <T>(url: string, options?: ConnectOptions) =>
     connect<T>(url, { ...options, method: "GET" }),
-  post: <T>(url: string, body?: any, options?: ConnectOptions) =>
+  post: <T>(url: string, body?: unknown, options?: ConnectOptions) =>
     connect<T>(url, { ...options, method: "POST", body: JSON.stringify(body) }),
-  put: <T>(url: string, body?: any, options?: ConnectOptions) =>
+  put: <T>(url: string, body?: unknown, options?: ConnectOptions) =>
     connect<T>(url, { ...options, method: "PUT", body: JSON.stringify(body) }),
   delete: <T>(url: string, options?: ConnectOptions) =>
     connect<T>(url, { ...options, method: "DELETE" }),

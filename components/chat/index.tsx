@@ -36,7 +36,7 @@ const Chat = () => {
   useEffect(() => {
     if (isSuccess) {
       const conversationId = Number(SESSION_CONVERSATION_ID.get());
-      if (conversationId) getChats({ conversationId, page: "1" });
+      if (conversationId) getChats({ conversationId, page: "1", limit: "50" });
     }
   }, [isSuccess, getChats]);
 

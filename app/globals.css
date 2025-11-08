@@ -120,6 +120,17 @@
   body {
     @apply bg-background text-foreground;
   }
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  @media (min-height: 700px) {
+    .tall-w-36 {
+      width: calc(var(--spacing) * 36);
+    }
+    .tall-h-36 {
+      height: calc(var(--spacing) * 36);
+    }
+  }
 }
 
 html,

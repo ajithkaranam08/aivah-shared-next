@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 
+import Image from "next/image";
 import { Controller, useFormContext } from "react-hook-form";
 
 import { checkExpansion, createTag, placeCaretAtEnd } from "@/helper/chat";
@@ -75,14 +76,32 @@ const EditorInput = ({
     }
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
   const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    const html = text
-      .split(/\r?\n/)
-      .map((line) => `<p>${line || "<br>"}</p>`)
-      .join("");
-    document.execCommand("insertHTML", false, html);
+
+    const lastItem = e.clipboardData.items[e.clipboardData.items.length - 1];
+    if (lastItem.kind === "file") {
+      const file = lastItem.getAsFile();
+      if (file && file.type.startsWith("image/")) {
+        const url = URL.createObjectURL(file);
+        form.setValue("file", url);
+      }
+    } else {
+      const text = e.clipboardData.getData("text/plain");
+      const html = text
+        .split(/\r?\n/)
+        .map((line) => `<p>${line || "<br>"}</p>`)
+        .join("");
+      document.execCommand("insertHTML", false, html);
+    }
   };
 
   return (
@@ -96,6 +115,8 @@ const EditorInput = ({
               onInput={(e) => handleInput(e, field.onChange)}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
               ref={editorRef}
               suppressContentEditableWarning
               contentEditable
