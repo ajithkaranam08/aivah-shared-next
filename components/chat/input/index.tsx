@@ -1,12 +1,16 @@
 import { useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpIcon, AudioLinesIcon, MicIcon } from "lucide-react";
+import { ArrowUpIcon, AudioLinesIcon, MicIcon, PauseIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
-import { useCreateChatMutation } from "@/services/conversation/mutation";
+import {
+  useChatStopMutation,
+  useCreateChatMutation,
+} from "@/services/conversation/mutation";
 import { useVoiceModalStore } from "@/store/companion";
+import useConversationStore from "@/store/conversation";
 import { useLivekitStore } from "@/store/livekit";
 import { ChatInputExpandTypes } from "@/types/chat";
 import { ChatFormType, chatFormSchema } from "@/zod-schema/chat";
@@ -23,10 +27,12 @@ const ChatInput = ({
 }) => {
   const { setVoiceModalOpen, voiceModalOpen } = useVoiceModalStore();
   const containerRef = useRef<HTMLFormElement>(null);
+  const loadingType = useConversationStore((s) => s.loadingType);
 
   const { room } = useLivekitStore();
 
   const { mutateAsync } = useCreateChatMutation(room);
+  const { mutateAsync: stopChat } = useChatStopMutation(room);
 
   const form = useForm<ChatFormType>({
     resolver: zodResolver(chatFormSchema),
@@ -57,12 +63,24 @@ const ChatInput = ({
   };
 
   const onSubmit = async (data: ChatFormType) => {
+    if (data.fileUrl) {
+      await mutateAsync({
+        content: data.text,
+        chatId: new Date().getTime(),
+        sender: "user",
+        timestamp: new Date().toISOString(),
+        file: data.file,
+        image_url: data.fileUrl,
+      });
+    }
+
     await mutateAsync({
       content: data.text,
       chatId: new Date().getTime(),
       sender: "user",
       timestamp: new Date().toISOString(),
     });
+
     form.reset();
     handleExpand(ChatInputExpandTypes.TEXT_EMPTY);
     const promptTextarea = document.getElementById("prompt-textarea");
@@ -99,6 +117,10 @@ const ChatInput = ({
                 onClick={() => form.handleSubmit(onSubmit)()}
               >
                 <ArrowUpIcon size={18} />
+              </TooltipInput>
+            ) : loadingType === "GENERATING" ? (
+              <TooltipInput tooltipText="Stop" onClick={() => stopChat()}>
+                <div className="bg-accent size-3" />
               </TooltipInput>
             ) : (
               <TooltipInput

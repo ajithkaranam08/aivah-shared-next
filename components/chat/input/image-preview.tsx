@@ -9,7 +9,7 @@ const ImagePreviewInput = () => {
   const form = useFormContext<ChatFormType>();
   return (
     <Controller
-      name="file"
+      name="fileUrl"
       control={form.control}
       render={({ field }) => (
         <>
@@ -27,7 +27,10 @@ const ImagePreviewInput = () => {
                   size={"icon-sm"}
                   variant={"ghost"}
                   className="absolute top-1 right-1 cursor-pointer gap-2 text-white"
-                  onClick={() => field.onChange("")}
+                  onClick={() => {
+                    field.onChange("");
+                    form.setValue("file", undefined);
+                  }}
                 >
                   <XIcon size={18} />
                 </Button>

@@ -92,7 +92,8 @@ const EditorInput = ({
       const file = lastItem.getAsFile();
       if (file && file.type.startsWith("image/")) {
         const url = URL.createObjectURL(file);
-        form.setValue("file", url);
+        form.setValue("fileUrl", url);
+        form.setValue("file", file);
       }
     } else {
       const text = e.clipboardData.getData("text/plain");
@@ -106,7 +107,7 @@ const EditorInput = ({
 
   return (
     <div className="-my-2.5 flex min-h-14 items-center overflow-x-hidden px-1.5 [grid-area:primary] group-data-expanded/composer:mb-0 group-data-expanded/composer:px-2.5">
-      <div className="_prosemirror-parent_1dsxi_2 text-token-text-primary default-browser vertical-scroll-fade-mask relative max-h-52 flex-1 overflow-auto [scrollbar-width:thin]">
+      <div className="relative max-h-52 flex-1 overflow-auto [scrollbar-width:thin]">
         <Controller
           control={form.control}
           name="text"

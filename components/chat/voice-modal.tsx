@@ -8,7 +8,10 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 
 import { useSpeechToText } from "@/hooks/use-speech-to-text";
-import { useCreateChatMutation } from "@/services/conversation/mutation";
+import {
+  useChatStopMutation,
+  useCreateChatMutation,
+} from "@/services/conversation/mutation";
 import { useVoiceModalStore } from "@/store/companion";
 import useConversationStore from "@/store/conversation";
 import { useLivekitStore } from "@/store/livekit";
@@ -25,7 +28,9 @@ export default function VoiceModal() {
     useSpeechToText();
   const { room } = useLivekitStore();
   const { mutate, isPending } = useCreateChatMutation(room);
-  const { transcription, loadingType } = useConversationStore();
+  const transcription = useConversationStore((s) => s.transcription);
+  const loadingType = useConversationStore((s) => s.loadingType);
+  const { mutate: stopChat } = useChatStopMutation(room);
 
   const handleRecordToggle = async () => {
     try {
@@ -42,9 +47,13 @@ export default function VoiceModal() {
   };
 
   const handleStop = async () => {
-    await stop();
-    setIsRecording(false);
-    setVoiceModalOpen(false);
+    if (loadingType === "GENERATING") {
+      stopChat();
+    } else {
+      await stop();
+      setIsRecording(false);
+      setVoiceModalOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -84,7 +93,7 @@ export default function VoiceModal() {
           </section>
 
           <motion.div
-            className="text-primary/80 min-h-[60px] px-6 text-center text-lg"
+            className="text-primary/80 max-h-18 flex-1 overflow-auto px-6 text-center text-lg [scrollbar-width:thin]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
@@ -113,7 +122,11 @@ export default function VoiceModal() {
               className="size-14 cursor-pointer rounded-full"
               onClick={handleStop}
             >
-              <XIcon size={18} />
+              {loadingType === "GENERATING" ? (
+                <div className="bg-secondary-foreground size-4" />
+              ) : (
+                <XIcon size={18} />
+              )}
             </Button>
           </div>
         </motion.div>

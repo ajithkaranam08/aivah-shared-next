@@ -33,9 +33,9 @@ const useConversationStore = create<ConversationStore>((set, get) => ({
   messages: [],
   setMessages: (newMessages) => {
     if (Array.isArray(newMessages)) {
-      set({ messages: [...get().messages, ...newMessages] });
+      set((state) => ({ messages: state.messages.concat(newMessages) }));
     } else {
-      set({ messages: [...get().messages, newMessages] });
+      set((state) => ({ messages: state.messages.concat(newMessages) }));
     }
   },
 

@@ -20,7 +20,7 @@ const ChatMessage = ({ room }: ChatMessageProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { messages } = useConversationStore();
+  const messages = useConversationStore((s) => s.messages);
 
   const { isBottom } = useChatScroll({
     chatRef: scrollRef,

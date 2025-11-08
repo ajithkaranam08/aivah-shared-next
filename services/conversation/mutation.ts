@@ -89,9 +89,16 @@ export const useCreateChatMutation = (room: Room | null) => {
   return useMutation<unknown, Error, ChatMessage>({
     mutationFn: async (body) => {
       if (room) {
-        room?.localParticipant.sendText(body.content, {
-          topic: "lk.chat",
-        });
+        if (body.file) {
+          room?.localParticipant.sendFile(body.file, {
+            mimeType: body.file.type,
+            topic: "image-upload",
+          });
+        } else if (body.content) {
+          room?.localParticipant.sendText(body.content, {
+            topic: "lk.chat",
+          });
+        }
       }
       return true;
     },
@@ -100,6 +107,19 @@ export const useCreateChatMutation = (room: Room | null) => {
       if (room) {
         setMessages(values);
       }
+    },
+  });
+};
+
+export const useChatStopMutation = (room: Room | null) => {
+  return useMutation<unknown, Error, void>({
+    mutationFn: async () => {
+      if (room) {
+        room?.localParticipant.sendText("stop", {
+          topic: "lk.stop",
+        });
+      }
+      return true;
     },
   });
 };
