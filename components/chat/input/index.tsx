@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpIcon, AudioLinesIcon, MicIcon, PauseIcon } from "lucide-react";
+import { ArrowUpIcon, AudioLinesIcon, MicIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";

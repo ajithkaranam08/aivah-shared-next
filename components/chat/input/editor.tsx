@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 
-import Image from "next/image";
 import { Controller, useFormContext } from "react-hook-form";
 
 import { checkExpansion, createTag, placeCaretAtEnd } from "@/helper/chat";

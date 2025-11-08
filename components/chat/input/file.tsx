@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { PlusIcon } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
-import { Label } from "@/components/ui/label";
 import { ChatFormType } from "@/zod-schema/chat";
 
 import { TooltipInput } from "./tooltip";

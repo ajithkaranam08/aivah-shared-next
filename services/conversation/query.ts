@@ -17,8 +17,8 @@ export interface DataReceivedProps {
   topic: "message" | null;
   message: string;
   timestamp: number | null;
-  image_url?: string ;
-  video_url?: string ;
+  image_url?: string;
+  video_urls?: [string];
 }
 
 type HookRoom = LivekitConnectionResult["room"] | null;
@@ -55,7 +55,7 @@ export const useChatDateReceived = (room: HookRoom) => {
       console.log("Data received in hook:", jsonData);
       handleEvent().setGreeting(jsonData);
       handleEvent().setLoadingType("INIT");
-      const media = jsonData.image_url || jsonData.video_url;
+      const media = jsonData.image_url || jsonData.video_urls?.[0];
       const isImage = Boolean(jsonData.image_url);
       if (media && coonversationId) {
         handleEvent().setMessages({
@@ -64,14 +64,14 @@ export const useChatDateReceived = (room: HookRoom) => {
           timestamp: new Date(jsonData.timestamp || Date.now()),
           chatId: new Date().getTime(),
           ...(isImage ? { image_url: jsonData.image_url } : {}),
-          ...(!isImage ? { video_url: jsonData.video_url } : {}),
+          ...(!isImage ? { video_url: jsonData.video_urls?.[0] } : {}),
         });
         handleEvent().syncChat({
-          chat: '',
+          chat: "",
           conversationId: Number(coonversationId),
           chatType: isImage ? "image" : "video",
           ...(isImage ? { imagePath: jsonData.image_url } : {}),
-          ...(!isImage ? { videoPath: jsonData.video_url } : {}),
+          ...(!isImage ? { videoPath: jsonData.video_urls?.[0] } : {}),
         });
       }
     };

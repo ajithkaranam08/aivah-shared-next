@@ -41,6 +41,7 @@
     "react-hook-form": "^7.66.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.6",
+    "react-voice-visualizer": "^2.0.8",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "socket.io-client": "^4.8.1",
