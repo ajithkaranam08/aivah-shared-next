@@ -16,6 +16,8 @@ const EditorInput = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const form = useFormContext<ChatFormType>();
 
+  console.log("EditorInput rendered", form.getValues("text"));
+
   const handleInput = (
     e: React.FormEvent<HTMLDivElement>,
     onChange: (v: string) => void
@@ -105,32 +107,30 @@ const EditorInput = ({
   };
 
   return (
-    <div className="-my-2.5 flex min-h-14 items-center overflow-x-hidden px-1.5 [grid-area:primary] group-data-expanded/composer:mb-0 group-data-expanded/composer:px-2.5">
-      <div className="relative max-h-52 flex-1 overflow-auto [scrollbar-width:thin]">
-        <Controller
-          control={form.control}
-          name="text"
-          render={({ field }) => (
-            <div
-              onInput={(e) => handleInput(e, field.onChange)}
-              onKeyDown={handleKeyDown}
-              onPaste={handlePaste}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              ref={editorRef}
-              suppressContentEditableWarning
-              contentEditable
-              translate="no"
-              id="prompt-textarea"
-              data-virtualkeyboard="true"
-              inputMode="text"
-              className="mt-4 -translate-y-0.5 pb-4 wrap-break-word whitespace-break-spaces outline-none"
-            >
-              <p data-placeholder="Ask anything" className="place-holder"></p>
-            </div>
-          )}
-        />
-      </div>
+    <div className="relative max-h-52 flex-1 overflow-auto [scrollbar-width:thin]">
+      <Controller
+        control={form.control}
+        name="text"
+        render={({ field }) => (
+          <div
+            onInput={(e) => handleInput(e, field.onChange)}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            ref={editorRef}
+            suppressContentEditableWarning
+            contentEditable
+            translate="no"
+            id="prompt-textarea"
+            data-virtualkeyboard="true"
+            inputMode="text"
+            className="mt-4 -translate-y-0.5 pb-4 wrap-break-word whitespace-break-spaces outline-none"
+          >
+            <p data-placeholder="Ask anything" className="place-holder"></p>
+          </div>
+        )}
+      />
     </div>
   );
 };
