@@ -30,12 +30,12 @@ export type ExperienceProps = {
   chatId?: number;
   focus?: "face" | "body";
   scene?:
-    | "videowall"
-    | "empty"
-    | "zen"
-    | "webresults"
-    | "presentation"
-    | "presentation2";
+  | "videowall"
+  | "empty"
+  | "zen"
+  | "webresults"
+  | "presentation"
+  | "presentation2";
   color?: string;
   widgets?: SceneWidget[];
   companionType?: string;
@@ -128,13 +128,7 @@ const Experience = ({
               position={avatarPlacement.position}
               rotation={avatarPlacement.rotation}
             >
-              <Avatar
-                currentMessage={currentMessage}
-                modelUrl={modelUrl}
-                stopAudio={0}
-                chatId={chatId!}
-                activeSceneName={scene}
-              />
+              <Avatar />
             </group>
           )}
 
@@ -218,12 +212,12 @@ export default Experience;
 interface CameraHandlerProps {
   focus?: "face" | "body";
   scene?:
-    | "videowall"
-    | "empty"
-    | "zen"
-    | "webresults"
-    | "presentation"
-    | "presentation2";
+  | "videowall"
+  | "empty"
+  | "zen"
+  | "webresults"
+  | "presentation"
+  | "presentation2";
   companionType?: string;
 }
 
