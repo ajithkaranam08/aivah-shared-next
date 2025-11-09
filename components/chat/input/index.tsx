@@ -114,7 +114,7 @@ const ChatInput = ({
           )}
         >
           <div className="-my-2.5 flex min-h-14 items-center overflow-x-hidden px-1.5 [grid-area:primary] group-data-expanded/composer:mb-0 group-data-expanded/composer:px-2.5">
-            <VoiceInput />
+            <VoiceInput onExpand={handleExpand} />
             <Activity mode={isRecording ? "hidden" : "visible"}>
               <EditorInput onExpand={handleExpand} onSubmit={onSubmit} />
             </Activity>

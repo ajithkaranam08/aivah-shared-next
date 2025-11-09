@@ -2,22 +2,42 @@ import { useEffect } from "react";
 
 import { useFormContext } from "react-hook-form";
 import { VoiceVisualizer, useVoiceVisualizer } from "react-voice-visualizer";
+import { useShallow } from "zustand/shallow";
 
 import { useSpeechToText } from "@/hooks/use-speech-to-text";
-import { useVoiceModalStore } from "@/store/companion";
+import { VoiceModalStateProps, useVoiceModalStore } from "@/store/companion";
+import { ChatInputExpandTypes } from "@/types/chat";
 
-const VoiceInput = ({ height = 35, width = "100%" }) => {
+const VoiceInput = ({
+  onExpand,
+  height = 35,
+  width = "100%",
+}: {
+  onExpand?: (val: ChatInputExpandTypes) => void;
+  height?: number;
+  width?: number | string;
+}) => {
   const recorderControls = useVoiceVisualizer();
   const form = useFormContext();
 
-  // ✅ single shallow zustand subscription
-  const { isRecording, recordedType, setRecordedType, setIsRecording } =
-    useVoiceModalStore();
+  const shallow = useShallow<
+    VoiceModalStateProps,
+    Pick<
+      VoiceModalStateProps,
+      "isRecording" | "recordedType" | "setRecordedType" | "setIsRecording"
+    >
+  >((state) => ({
+    isRecording: state.isRecording,
+    recordedType: state.recordedType,
+    setRecordedType: state.setRecordedType,
+    setIsRecording: state.setIsRecording,
+  }));
 
-  // ✅ stable speech hook destructuring
+  const { isRecording, recordedType, setRecordedType, setIsRecording } =
+    useVoiceModalStore(shallow);
+
   const { finalText, start, stop, clearText } = useSpeechToText();
 
-  // ✅ memoized handlers to avoid effect retrigger
   const handleStart = async () => {
     await start();
     recorderControls.startRecording();
@@ -26,6 +46,10 @@ const VoiceInput = ({ height = 35, width = "100%" }) => {
   const handleStop = async () => {
     await stop();
     recorderControls.stopRecording();
+    clearText();
+    recorderControls.clearCanvas();
+    setRecordedType("INIT");
+    setIsRecording(false);
   };
 
   // ✅ depend only on stable values
@@ -35,19 +59,22 @@ const VoiceInput = ({ height = 35, width = "100%" }) => {
     return () => recorderControls.stopRecording();
   }, [isRecording]);
 
-  // ✅ removed finalText from dependency (not needed for trigger)
   useEffect(() => {
     if (recordedType === "SAVE" && finalText) {
       form.setValue("text", finalText);
+      const editor = document.getElementById("prompt-textarea");
+      if (editor) {
+        editor.innerHTML = `<p>${finalText}</p>`;
+      }
+      setTimeout(() => onExpand?.(ChatInputExpandTypes.SINGLE_LINE), 0);
     }
 
     if (recordedType === "CANCEL" || recordedType === "SAVE") {
       handleStop();
-      clearText();
-      setRecordedType("INIT");
-      setIsRecording(false);
     }
   }, [recordedType, finalText]);
+
+  console.log({ finalText });
 
   return (
     isRecording && (
@@ -61,6 +88,7 @@ const VoiceInput = ({ height = 35, width = "100%" }) => {
           isControlPanelShown={false}
           controls={recorderControls}
           isDefaultUIShown={false}
+          isAudioProcessingTextShown={false}
         />
       </div>
     )
