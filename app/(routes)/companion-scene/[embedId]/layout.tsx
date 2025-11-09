@@ -6,7 +6,6 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 
-import Container from "@/components/ui/container";
 import { validateQueryOptions } from "@/services/validate/query";
 
 type Props = {
@@ -22,9 +21,7 @@ const Companionlayout = async ({ children, params }: Props) => {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <Container className="h-full p-2 lg:p-20">
-      <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
-    </Container>
+    <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
   );
 };
 
