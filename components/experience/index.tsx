@@ -1,4 +1,4 @@
-"use client;";
+"use client";
 import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 
 import { CameraControls } from "@react-three/drei";
@@ -8,6 +8,7 @@ import { degToRad } from "three/src/math/MathUtils.js";
 
 import { Skeleton } from "../ui/skeleton";
 import Avatar from "./avater";
+// import Scene from "./presentation";
 import CameraRig from "./shared-scene-components/camera-rig";
 import EnvironmentLightSetup from "./shared-scene-components/shared-scene-components";
 import { Standard } from "./standard";
@@ -125,6 +126,8 @@ const Experience = ({
 
         <CameraRig>
           <Standard color={color} />
+
+          {/* <Scene color={color} dashboard /> */}
           <group
             position={avatarPlacement.position}
             rotation={avatarPlacement.rotation}

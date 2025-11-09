@@ -1,10 +1,22 @@
 import { ConnectOptions, apiFetch } from "@/connector/client-api";
-import { ApiResponse } from "@/types/api";
 import { ChatbotDetails } from "@/types/validation";
 
 const validateApi = {
-  uuid: (id: string, options?: ConnectOptions) =>
-    apiFetch.get<ChatbotDetails>(`embed-share/validate/${id}`, options),
+  uuid: (id: string, params?: object, options?: ConnectOptions) => {
+    const queryParams = new URLSearchParams();
+
+    console.log(params);
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, String(value));
+      }
+    });
+    return apiFetch.get<ChatbotDetails>(
+      `embed-share/validate/${id}?${queryParams}`,
+      options
+    );
+  },
 };
 
 export default validateApi;
