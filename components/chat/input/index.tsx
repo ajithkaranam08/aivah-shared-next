@@ -1,7 +1,13 @@
-import { useRef } from "react";
+import { Activity, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpIcon, AudioLinesIcon, MicIcon } from "lucide-react";
+import {
+  ArrowUpIcon,
+  AudioLinesIcon,
+  CheckIcon,
+  MicIcon,
+  XIcon,
+} from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -19,13 +25,20 @@ import EditorInput from "./editor";
 import FileInput from "./file";
 import ImagePreviewInput from "./image-preview";
 import { TooltipInput } from "./tooltip";
+import VoiceInput from "./voice-wave";
 
 const ChatInput = ({
   handleScrollBottom,
 }: {
   handleScrollBottom: () => void;
 }) => {
-  const { setVoiceModalOpen, voiceModalOpen } = useVoiceModalStore();
+  const {
+    setVoiceModalOpen,
+    voiceModalOpen,
+    setIsRecording,
+    isRecording,
+    setRecordedType,
+  } = useVoiceModalStore();
   const containerRef = useRef<HTMLFormElement>(null);
   const loadingType = useConversationStore((s) => s.loadingType);
 
@@ -100,35 +113,66 @@ const ChatInput = ({
             `grid cursor-text grid-cols-[auto_1fr_auto] rounded-3xl bg-slate-100 p-2.5 shadow-lg [grid-template-areas:'header_header_header'_'leading_primary_trailing'_'._footer_.'] group-data-expanded/composer:[grid-template-areas:'header_header_header'_'primary_primary_primary'_'leading_footer_trailing'] dark:bg-[#303030]`
           )}
         >
-          <EditorInput onExpand={handleExpand} onSubmit={onSubmit} />
+          <div className="-my-2.5 flex min-h-14 items-center overflow-x-hidden px-1.5 [grid-area:primary] group-data-expanded/composer:mb-0 group-data-expanded/composer:px-2.5">
+            <VoiceInput />
+            <Activity mode={isRecording ? "hidden" : "visible"}>
+              <EditorInput onExpand={handleExpand} onSubmit={onSubmit} />
+            </Activity>
+          </div>
 
           <div className="origin-[50%_50%] transform-none [grid-area:leading]">
             <FileInput />
           </div>
 
           <div className="flex items-center gap-2 [grid-area:trailing]">
-            <TooltipInput tooltipText="Voice input" variant="ghost">
-              <MicIcon size={18} />
-            </TooltipInput>
+            {isRecording ? (
+              <>
+                <TooltipInput
+                  tooltipText="Voice input"
+                  variant="ghost"
+                  onClick={() => setRecordedType("CANCEL")}
+                >
+                  <XIcon size={18} />
+                </TooltipInput>
 
-            {form.formState.isValid ? (
-              <TooltipInput
-                tooltipText="Send message"
-                onClick={() => form.handleSubmit(onSubmit)()}
-              >
-                <ArrowUpIcon size={18} />
-              </TooltipInput>
-            ) : loadingType === "GENERATING" ? (
-              <TooltipInput tooltipText="Stop" onClick={() => stopChat()}>
-                <div className="bg-accent size-3" />
-              </TooltipInput>
+                <TooltipInput
+                  tooltipText="Voice input"
+                  variant="ghost"
+                  onClick={() => setRecordedType("SAVE")}
+                >
+                  <CheckIcon size={18} />
+                </TooltipInput>
+              </>
             ) : (
-              <TooltipInput
-                tooltipText="Audio options"
-                onClick={() => setVoiceModalOpen(!voiceModalOpen)}
-              >
-                <AudioLinesIcon size={18} />
-              </TooltipInput>
+              <>
+                <TooltipInput
+                  tooltipText="Voice input"
+                  variant="ghost"
+                  onClick={() => setIsRecording(!isRecording)}
+                >
+                  <MicIcon size={18} />
+                </TooltipInput>
+
+                {form.formState.isValid ? (
+                  <TooltipInput
+                    tooltipText="Send message"
+                    onClick={() => form.handleSubmit(onSubmit)()}
+                  >
+                    <ArrowUpIcon size={18} />
+                  </TooltipInput>
+                ) : loadingType === "GENERATING" ? (
+                  <TooltipInput tooltipText="Stop" onClick={() => stopChat()}>
+                    <div className="bg-accent size-3" />
+                  </TooltipInput>
+                ) : (
+                  <TooltipInput
+                    tooltipText="Audio options"
+                    onClick={() => setVoiceModalOpen(!voiceModalOpen)}
+                  >
+                    <AudioLinesIcon size={18} />
+                  </TooltipInput>
+                )}
+              </>
             )}
           </div>
 

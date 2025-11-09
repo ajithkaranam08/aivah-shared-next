@@ -93,15 +93,13 @@ export const useSpeechToText = (languages = ["en-US"]) => {
   };
 
   /** ▶️ Start recognition safely */
-  const start = async () => {
+  const start = useCallback(async () => {
     if (isListening) return;
 
     try {
       await checkMicPermission();
 
-      new Promise((resolve) => {
-        resolve(createRecognizer());
-      });
+      createRecognizer();
 
       await new Promise<void>((resolve, reject) => {
         recognizerRef.current?.startContinuousRecognitionAsync(resolve, reject);
@@ -113,10 +111,10 @@ export const useSpeechToText = (languages = ["en-US"]) => {
       recognizerRef.current = null;
       throw err;
     }
-  };
+  }, [isListening, createRecognizer]);
 
   /** ⏹️ Stop recognition safely */
-  const stop = async () => {
+  const stop = useCallback(async () => {
     if (!isListening) return;
     try {
       await new Promise<void>((resolve, reject) => {
@@ -130,7 +128,7 @@ export const useSpeechToText = (languages = ["en-US"]) => {
     } finally {
       setIsListening(false);
     }
-  };
+  }, [isListening]);
 
   const clearText = () => {
     setLiveText("");
