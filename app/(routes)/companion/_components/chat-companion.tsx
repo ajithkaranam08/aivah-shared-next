@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 
-import { useParams } from "next/navigation";
-
 import VoiceModal from "@/components/chat/voice-modal";
 import { LoaderOne } from "@/components/ui/loader";
 import { SESSION_CONVERSATION_ID } from "@/helper/storage";
@@ -10,16 +8,18 @@ import {
   useGetChatsMutation,
 } from "@/services/conversation/mutation";
 import { useAudioTrack } from "@/services/conversation/query";
-import { useValidateUUID } from "@/services/validate/query";
 import { useLivekitStore } from "@/store/livekit";
+import { ChatbotDetails } from "@/types/validation";
 
 import MessageCompanion from "./message-companion";
 
-const ChatCompanion = () => {
-  const { embedId } = useParams();
+interface ChatCompanionProps {
+  sessionData: ChatbotDetails;
+}
+
+const ChatCompanion = ({ sessionData }: ChatCompanionProps) => {
   const { connect, room, disconnect } = useLivekitStore();
 
-  const { data: sessionData } = useValidateUUID(String(embedId));
   const {
     mutate: initConversation,
     isSuccess,
@@ -41,7 +41,7 @@ const ChatCompanion = () => {
       },
     });
     return () => disconnect();
-  }, [sessionData, initConversation, connect, disconnect]);
+  }, [sessionData]);
 
   useEffect(() => {
     if (isSuccess) {
