@@ -61,11 +61,12 @@ const VoiceInput = ({
 
   useEffect(() => {
     if (recordedType === "SAVE" && finalText) {
-      form.setValue("text", finalText);
       const editor = document.getElementById("prompt-textarea");
       if (editor) {
         editor.innerHTML = `<p>${finalText}</p>`;
       }
+      form.setValue("text", finalText);
+      form.trigger("text");
       setTimeout(() => onExpand?.(ChatInputExpandTypes.SINGLE_LINE), 0);
     }
 
@@ -73,8 +74,6 @@ const VoiceInput = ({
       handleStop();
     }
   }, [recordedType, finalText]);
-
-  console.log({ finalText });
 
   return (
     isRecording && (

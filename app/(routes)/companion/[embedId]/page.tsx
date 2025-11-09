@@ -10,6 +10,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ModeToggleBtn } from "@/components/ui/theme-toggle";
 import { SESSION_TOKEN } from "@/helper/storage";
 import useResize from "@/hooks/use-resize";
@@ -28,12 +29,6 @@ const CompanionEmbedId = () => {
 
   const { data } = useValidateUUID(String(embedId));
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      SESSION_TOKEN.set(data.details.token);
-    }
-  }, [data]);
-
   const isTablet = width <= 768;
 
   const info: Info = {
@@ -50,11 +45,15 @@ const CompanionEmbedId = () => {
       >
         <ResizablePanel defaultSize={info.panelDefaultSize} minSize={35}>
           <div className="flex h-full items-center justify-center">
-            <Experience
-              modelUrl={data.details?.avatarUrl}
-              chatId={data.details?.chatbotId}
-              companionType={data.details?.avatarType}
-            />
+            {data.details?.avatarUrl ? (
+              <Experience
+                modelUrl={data.details?.avatarUrl}
+                chatId={data.details?.chatbotId}
+                companionType={data.details?.avatarType}
+              />
+            ) : (
+              <Skeleton className="size-full flex-1 rounded-none" />
+            )}
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />

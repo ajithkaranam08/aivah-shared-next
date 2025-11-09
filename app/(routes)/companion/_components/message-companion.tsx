@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 
 import { Room } from "livekit-client";
 import { ArrowDown } from "lucide-react";
+import { useShallow } from "zustand/shallow";
 
 import ChatInput from "@/components/chat/input";
 import ChatInitWithCredit from "@/components/chat/message/chat-Init-with-credit";
@@ -9,7 +10,9 @@ import ChatBubble from "@/components/chat/message/chat-bubble";
 import GenerateChat from "@/components/chat/message/generate-chat";
 import { Button } from "@/components/ui/button";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
-import useConversationStore from "@/store/conversation";
+import useConversationStore, {
+  ConversationStoreProps,
+} from "@/store/conversation";
 
 type MessageCompanionProps = {
   room: Room | null;
@@ -19,7 +22,14 @@ const MessageCompanion = ({ room }: MessageCompanionProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const messages = useConversationStore((s) => s.messages);
+  const shallow = useShallow<
+    ConversationStoreProps,
+    Pick<ConversationStoreProps, "messages">
+  >((state) => ({
+    messages: state.messages,
+  }));
+
+  const { messages } = useConversationStore(shallow);
 
   const { isBottom } = useChatScroll({
     chatRef: scrollRef,

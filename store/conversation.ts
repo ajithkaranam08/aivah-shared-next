@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { DataReceivedProps } from "@/services/conversation/query";
 import { ChatMessage } from "@/types/chat";
 
-interface ConversationStore {
+export interface ConversationStoreProps {
   greeting: DataReceivedProps;
   setGreeting: (greeting: DataReceivedProps) => void;
 
@@ -17,10 +17,10 @@ interface ConversationStore {
   setLoadingType: (type: "INIT" | "GREETING" | "GENERATING" | "NONE") => void;
 }
 
-const useConversationStore = create<ConversationStore>((set, get) => ({
+const useConversationStore = create<ConversationStoreProps>((set, get) => ({
   greeting: {
     topic: null,
-    message: "Hi there! Welcome to the chat.",
+    message: "INIT",
     timestamp: null,
   },
   setGreeting: (greeting) => set({ greeting }),

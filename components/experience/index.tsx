@@ -1,11 +1,12 @@
 "use client;";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 
 import { CameraControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Color, ColorRepresentation } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
+import { Skeleton } from "../ui/skeleton";
 import Avatar from "./avater";
 import CameraRig from "./shared-scene-components/camera-rig";
 import EnvironmentLightSetup from "./shared-scene-components/shared-scene-components";
@@ -30,12 +31,12 @@ export type ExperienceProps = {
   chatId?: number;
   focus?: "face" | "body";
   scene?:
-  | "videowall"
-  | "empty"
-  | "zen"
-  | "webresults"
-  | "presentation"
-  | "presentation2";
+    | "videowall"
+    | "empty"
+    | "zen"
+    | "webresults"
+    | "presentation"
+    | "presentation2";
   color?: string;
   widgets?: SceneWidget[];
   companionType?: string;
@@ -85,13 +86,9 @@ const AVATAR_PLACEMENT: Record<
 
 const Experience = ({
   modelUrl,
-  currentMessage,
-  idleCase,
-  chatId,
   focus = "body",
   scene = "empty",
   color = "#4E5481",
-  widgets,
   companionType,
 }: ExperienceProps) => {
   const lightBackgroundColor = new Color(color).multiplyScalar(3.5);
@@ -100,14 +97,19 @@ const Experience = ({
     scene === "empty" ? AVATAR_PLACEMENT["face"] : AVATAR_PLACEMENT[scene];
 
   return (
-    <>
+    <div className="flex-center relative size-full">
+      <Suspense fallback={null}>
+        <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
+          <Skeleton className="size-full" />
+        </div>
+      </Suspense>
       <Canvas
         shadows
         camera={{
           position: [0, 10, 10],
           fov: 70,
         }}
-        className="z-0 w-full"
+        className="z-10 h-full w-full"
         dpr={[1, 1.5]}
       >
         <color
@@ -123,14 +125,14 @@ const Experience = ({
 
         <CameraRig>
           <Standard color={color} />
-          {companionType !== "orbe" && (
-            <group
-              position={avatarPlacement.position}
-              rotation={avatarPlacement.rotation}
-            >
-              <Avatar />
-            </group>
-          )}
+          <group
+            position={avatarPlacement.position}
+            rotation={avatarPlacement.rotation}
+          >
+            <Suspense fallback={null}>
+              <Avatar modelUrl={modelUrl} />
+            </Suspense>
+          </group>
 
           <directionalLight
             castShadow
@@ -150,7 +152,7 @@ const Experience = ({
         </CameraRig>
         <EnvironmentLightSetup />
       </Canvas>
-    </>
+    </div>
   );
 };
 
@@ -212,12 +214,12 @@ export default Experience;
 interface CameraHandlerProps {
   focus?: "face" | "body";
   scene?:
-  | "videowall"
-  | "empty"
-  | "zen"
-  | "webresults"
-  | "presentation"
-  | "presentation2";
+    | "videowall"
+    | "empty"
+    | "zen"
+    | "webresults"
+    | "presentation"
+    | "presentation2";
   companionType?: string;
 }
 
@@ -233,6 +235,7 @@ const CameraHandler = ({
       const camera = controls.current.camera;
       const camSettings =
         scene === "empty" ? CAMERA_SETTINGS["body"] : CAMERA_SETTINGS[scene];
+      // eslint-disable-next-line prefer-const
       let { lookAt, fov } = camSettings;
       // Use orbe-specific lookAt values if companionType is orbe
       if (companionType === "orbe" && focus === "face") {
@@ -247,7 +250,8 @@ const CameraHandler = ({
         lookAt[5],
         true
       );
-      //@ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-expect-error
       camera.fov = fov;
       camera.updateProjectionMatrix();
     }
