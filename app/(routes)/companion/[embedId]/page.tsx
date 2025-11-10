@@ -48,7 +48,7 @@ const CompanionEmbedId = () => {
     if (!token && isSuccess) {
       SESSION_TOKEN.set(data.details.token);
     }
-  }, [router, isSuccess, data]);
+  }, [isSuccess, data]);
 
   const isTablet = width <= 768;
 
