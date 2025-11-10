@@ -15,22 +15,29 @@ export interface ConversationStoreProps {
 
   loadingType: "INIT" | "GREETING" | "GENERATING" | "NONE";
   setLoadingType: (type: "INIT" | "GREETING" | "GENERATING" | "NONE") => void;
+
+  reset: () => void;
 }
 
-const useConversationStore = create<ConversationStoreProps>((set, get) => ({
+const conversationStoreInit = {
+  transcription: "",
   greeting: {
     topic: null,
     message: "INIT",
     timestamp: null,
   },
+  messages: [],
+  loadingType: "INIT" as const,
+};
+
+const useConversationStore = create<ConversationStoreProps>((set, get) => ({
+  ...conversationStoreInit,
   setGreeting: (greeting) => set({ greeting }),
 
-  transcription: "",
   setTranscription: (words) => {
     set({ transcription: words });
   },
 
-  messages: [],
   setMessages: (newMessages) => {
     if (Array.isArray(newMessages)) {
       set((state) => ({ messages: state.messages.concat(newMessages) }));
@@ -39,11 +46,12 @@ const useConversationStore = create<ConversationStoreProps>((set, get) => ({
     }
   },
 
-  loadingType: "INIT",
   setLoadingType: (type) => {
-    if (get().loadingType === type) return;
+    if (type === get().loadingType) return;
     set({ loadingType: type });
   },
+
+  reset: () => set(conversationStoreInit),
 }));
 
 export default useConversationStore;

@@ -24,6 +24,7 @@ import { useValidateUUID } from "@/services/validate/query";
 import ChatCompanion from "../_components/chat-companion";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import useConversationStore from "@/store/conversation";
 
 type Info = {
   directionType: "horizontal" | "vertical";
@@ -36,7 +37,9 @@ const CompanionEmbedId = () => {
   const { embedId } = useParams();
   const queryClient = useQueryClient();
 
-  
+  const resetMessage = useConversationStore(state => state.reset);
+
+
 
   const { data, isSuccess } = useValidateUUID(String(embedId));
 
@@ -60,6 +63,7 @@ const CompanionEmbedId = () => {
     SESSION_TOKEN.clear();
     SESSION_UUID.clear();
     queryClient.clear();
+    resetMessage();
     router.refresh();
   };
 
