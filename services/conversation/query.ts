@@ -1,5 +1,6 @@
 import { useEffect, useEffectEvent } from "react";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   RemoteTrack,
   RoomEvent,
@@ -7,10 +8,15 @@ import {
   TranscriptionSegment,
 } from "livekit-client";
 
-import { SESSION_CONVERSATION_ID } from "@/helper/storage";
+import {
+  SESSION_CONVERSATION_ID,
+  SESSION_ID,
+  SESSION_UUID,
+} from "@/helper/storage";
 import useConversationStore from "@/store/conversation";
 import { LivekitConnectionResult } from "@/types/livekit";
 
+import conversationAPi from "./api";
 import { useSyncChatMutation } from "./mutation";
 
 export interface DataReceivedProps {
@@ -29,6 +35,10 @@ export const conversationKeys = {
     "conversation",
     conversationId,
     "chats",
+  ],
+  knowledgeBase: (sessionuuid: string | null) => [
+    "knowledge-base",
+    sessionuuid,
   ],
 };
 
@@ -194,4 +204,13 @@ export const useAudioTrack = (room?: HookRoom) => {
       room.off(RoomEvent.TrackSubscribed, handleTrackSubscribed);
     };
   }, [room]);
+};
+
+export const useKnowledgeBase = (options?: { enabled?: boolean }) => {
+  const sessionuuid = SESSION_UUID.get();
+  return useQuery({
+    queryKey: conversationKeys.knowledgeBase(sessionuuid),
+    queryFn: () => conversationAPi.knowledgeBase(),
+    enabled: options?.enabled,
+  });
 };

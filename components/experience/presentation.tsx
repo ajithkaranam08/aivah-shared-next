@@ -1,36 +1,28 @@
-import React, { useEffect, useMemo } from "react";
+"use client";
 
+import React, { useEffect, useMemo } from "react";
 import { Float, Html, RoundedBoxGeometry, useGLTF } from "@react-three/drei";
 import { extend, ObjectMap } from "@react-three/fiber";
 import { RoundedPlaneGeometry } from "maath/geometry";
 import { Color, ColorRepresentation, Mesh, MeshStandardMaterial } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
+import { GLTF } from "three-stdlib";
+import YouTube, { YouTubeProps } from "react-youtube";
 
 import Overlay from "./shared-scene-components/overlay";
-import { GLTF } from "three-stdlib";
+import { SceneWidget } from ".";
 
-// Extend RoundedPlaneGeometry to Fiber
+// Extend geometry for Fiber
 extend({ RoundedPlaneGeometry });
 
-// === Types ===
-export type SceneWidget = {
-  type: "iframe" | "image" | "video";
-  url: string;
-};
-
 export type SceneProps = {
-  widgets?: SceneWidget[];
+  widget?: SceneWidget;
   sceneRotation?: number;
   color: ColorRepresentation;
 };
-/**
- * 
- * @param scene 
- * @param color 
- */
+
 const useSceneSetup = (gltf?: GLTF & ObjectMap, color?: ColorRepresentation) => {
   useEffect(() => {
-    console.log(gltf?.scene)
     if (!gltf) return;
     gltf.scene?.traverse?.((child) => {
       const mesh = child as Mesh;
@@ -50,17 +42,35 @@ const useSceneSetup = (gltf?: GLTF & ObjectMap, color?: ColorRepresentation) => 
   }, [gltf, color]);
 };
 
-// === Main Component ===
-const Scene: React.FC<SceneProps> = ({
-  widgets = [],
+const PresentationScene: React.FC<SceneProps> = ({
+  widget,
+  sceneRotation = degToRad(50),
   color,
-}) => {
+}: SceneProps) => {
   const gltf = useGLTF("/models/zen.glb");
-  const drone = useGLTF('/models/quadrocopter_drone.glb');
-
+  const drone = useGLTF("/models/quadrocopter_drone.glb");
   const memoizedBackgroundColor = useMemo(() => new Color(color), [color]);
 
   useSceneSetup(gltf, color);
+
+  // YouTube options
+  const videoId = widget?.url
+    ? widget.url.split("v=")[1]?.split("&")[0] // extract ID if it's a normal YouTube URL
+    : "7j_NE6Pjv-E";
+
+  const opts: YouTubeProps["opts"] = {
+    height: "900",
+    width: "1600",
+    playerVars: {
+      autoplay: 1,
+      rel: 0,
+      modestbranding: 1,
+      controls: 0,
+      mute: 1, // avoids autoplay block
+      loop: 1,
+      playlist: videoId, // needed for looping
+    },
+  };
 
   return (
     <group>
@@ -69,7 +79,6 @@ const Scene: React.FC<SceneProps> = ({
           <primitive object={drone.scene} />
         </group>
       </Float>
-      {/* === Base 3D Model === */}
 
       <Html
         castShadow
@@ -81,28 +90,20 @@ const Scene: React.FC<SceneProps> = ({
         scale={0.101}
         className="p-0 m-0"
         geometry={<RoundedBoxGeometry args={[4, 2.225, 0.06]} />}
-
       >
-        <div className="overflow-hidden bg-transparent p-0">
-          <iframe
-            allowFullScreen
-            width={1600}
-            height={900}
-            src={"https://www.youtube.com/embed/7j_NE6Pjv-E?si=R6_1zzCKdUwHcA69"}
-          />
-
+        <div className="overflow-hidden rounded-lg bg-transparent p-0">
+          <YouTube videoId={videoId} opts={opts} />
         </div>
-
       </Html>
 
-      <primitive object={gltf.scene} rotation-y={degToRad(50)} />
+      <primitive object={gltf.scene} rotation-y={sceneRotation} />
 
       <Overlay backgroundColor={memoizedBackgroundColor} />
     </group>
   );
 };
 
-export default Scene;
+export default PresentationScene;
 
 useGLTF.preload("/models/zen.glb");
 useGLTF.preload("/models/quadrocopter_drone.glb");

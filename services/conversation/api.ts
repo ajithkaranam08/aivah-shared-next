@@ -1,3 +1,4 @@
+import { SceneWidget } from "@/components/experience";
 import { ConnectOptions, apiFetch } from "@/connector/client-api";
 import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
 
@@ -22,6 +23,11 @@ export interface ConversationApiResponse {
   userSessionId: number;
 }
 
+interface KnowledgeBaseApiResponse {
+  message: string;
+  content: SceneWidget;
+}
+
 const conversationAPi = {
   create: (body: ConversationApiProps["create"], options?: ConnectOptions) =>
     apiFetch.post<ConversationApiResponse>(
@@ -29,6 +35,8 @@ const conversationAPi = {
       body,
       options
     ),
+  knowledgeBase: () =>
+    apiFetch.get<KnowledgeBaseApiResponse>(`embed-share/knowledge-base`),
   syncChat: (
     body: ConversationApiProps["syncChat"],
     options?: ConnectOptions
@@ -43,7 +51,8 @@ const conversationAPi = {
       }
     });
     return apiFetch.get<ApiResponseWithChat>(
-      `embed-share/conversation/${conversationId}/chat?${queryParams}`, {revalidate: false}
+      `embed-share/conversation/${conversationId}/chat?${queryParams}`,
+      { revalidate: false }
     );
   },
 };

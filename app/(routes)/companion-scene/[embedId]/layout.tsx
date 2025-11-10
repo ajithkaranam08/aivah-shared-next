@@ -20,6 +20,8 @@ const Companionlayout = async ({ children, params }: Props) => {
   await queryClient.prefetchQuery(
     validateQueryOptions(embedId, { enableScene: 1 })
   );
+
+
   const dehydratedState = dehydrate(queryClient);
 
   return (

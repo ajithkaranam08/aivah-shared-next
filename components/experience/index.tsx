@@ -8,11 +8,10 @@ import { degToRad } from "three/src/math/MathUtils.js";
 
 import { Skeleton } from "../ui/skeleton";
 import Avatar from "./avater";
-// import Scene from "./presentation";
 import CameraRig from "./shared-scene-components/camera-rig";
 import EnvironmentLightSetup from "./shared-scene-components/shared-scene-components";
 import { Standard } from "./standard";
-import Scene from "./presentation";
+import PresentationScene from "./presentation";
 
 export type SceneWidget = {
   type: "iframe" | "image" | "video" | "attachment" | "youtubeurl";
@@ -20,7 +19,7 @@ export type SceneWidget = {
 };
 
 export type SceneProps = {
-  widgets?: SceneWidget[];
+  widgets?: SceneWidget;
   sceneRotation?: number;
   dashboard: boolean;
   color: ColorRepresentation;
@@ -40,7 +39,7 @@ export type ExperienceProps = {
   | "presentation"
   | "presentation2";
   color?: string;
-  widgets?: SceneWidget[];
+  widget?: SceneWidget;
   companionType?: string;
 };
 
@@ -92,6 +91,7 @@ const Experience = ({
   scene = "empty",
   color = "#4E5481",
   companionType,
+  widget
 }: ExperienceProps) => {
   const lightBackgroundColor = new Color(color).multiplyScalar(3.5);
 
@@ -129,7 +129,7 @@ const Experience = ({
 
 
           {scene === "presentation" ?
-            <Scene color={color} />
+            <PresentationScene color={color} widget={widget} />
             : <Standard color={color} />}
 
           <group
