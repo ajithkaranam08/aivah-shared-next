@@ -14,6 +14,7 @@ import { ChatbotDetails } from "@/types/validation";
 import { Activity } from "react"
 
 import MessageCompanionScene from "./message-companion-scene";
+import useConversationStore from "@/store/conversation";
 
 interface ChatCompanionSceneProps {
   sessionData: ChatbotDetails;
@@ -27,6 +28,7 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
 
   const { mutate: initConversation, isSuccess } = useConversationMutation();
   const { mutate: getChats } = useGetChatsMutation();
+  const setGreeting = useConversationStore(state => state.setGreeting)
 
   useAudioTrack(room);
 
@@ -34,6 +36,11 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
     initConversation(sessionData, {
       onSuccess: () => {
         if (sessionData) connect(sessionData);
+        setGreeting({
+          message: "",
+          timestamp: null,
+          topic: null
+        })
       },
     });
     return () => disconnect();
@@ -55,13 +62,14 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
       <div className="col-span-1" />
       <section className="col-span-1 flex items-end">
         <ChatInput
+          className="z-10"
           handleScrollBottom={handleBottom}
           setShowChat={() => setShowChat(!showChat)}
           showChat
         />
       </section>
       <section className="flex-center col-span-1">
-        <Activity mode={showChat ? "visible" : "hidden"}>
+        <Activity mode={showChat ? "visible" : "hidden"} >
           <MessageCompanionScene room={room} scrollRef={scrollRef} />
         </Activity>
 

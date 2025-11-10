@@ -33,7 +33,6 @@ const useSceneSetup = (gltf?: GLTF & ObjectMap, color?: ColorRepresentation) => 
     console.log(gltf?.scene)
     if (!gltf) return;
     gltf.scene?.traverse?.((child) => {
-      console.log({ child })
       const mesh = child as Mesh;
       if (mesh.isMesh) {
         mesh.receiveShadow = true;

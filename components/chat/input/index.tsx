@@ -32,10 +32,12 @@ const ChatInput = ({
   handleScrollBottom,
   showChat,
   setShowChat,
+  className
 }: {
   handleScrollBottom: () => void;
   showChat?: boolean;
   setShowChat?: () => void;
+  className?: string;
 }) => {
   const {
     setVoiceModalOpen,
@@ -111,7 +113,7 @@ const ChatInput = ({
 
   return (
     <FormProvider {...form}>
-      <form ref={containerRef} className="group/composer w-full">
+      <form ref={containerRef} className={cn("group/composer w-full", className)}>
         <div
           id="chat-expanded"
           className={cn(

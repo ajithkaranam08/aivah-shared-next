@@ -28,10 +28,10 @@ const CompanionEmbedId = () => {
 
   return (
     <div className="h-full relative">
-      <section className="absolute top-0 left-0 bg-red-200 size-full z-0">
+      <section className="absolute top-0 left-0  size-full z-1">
         <Experience modelUrl={data.details.avatarUrl} scene="presentation" />
       </section>
-      <section className="z-10 h-full relative">
+      <section className=" h-full">
         <ChatCompanionScene sessionData={data} />
       </section>
     </div>

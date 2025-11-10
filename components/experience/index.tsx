@@ -111,7 +111,7 @@ const Experience = ({
           position: [0, 10, 10],
           fov: 70,
         }}
-        className="h-full w-full"
+        className="h-full w-full z-10"
         dpr={[1, 1.5]}
       >
         <color
@@ -126,9 +126,12 @@ const Experience = ({
         <ambientLight intensity={0.5} />
 
         <CameraRig>
-          <Standard color={color} />
 
-          <Scene color={color} />
+
+          {scene === "presentation" ?
+            <Scene color={color} />
+            : <Standard color={color} />}
+
           <group
             position={avatarPlacement.position}
             rotation={avatarPlacement.rotation}

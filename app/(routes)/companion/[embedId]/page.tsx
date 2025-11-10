@@ -81,6 +81,7 @@ const CompanionEmbedId = () => {
                   modelUrl={data.details?.avatarUrl}
                   chatId={data.details?.chatbotId}
                   companionType={data.details?.avatarType}
+                  scene="empty"
                 />
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-center gap-3 opacity-25 group-hover:opacity-100">
                   <ModeToggleBtn />

@@ -30,7 +30,7 @@ const MessageCompanionScene = ({ room, scrollRef }: MessageCompanionSceneProps) 
 
   return (
     <div className="flex-center relative h-[calc(100dvh-10rem)] flex-1">
-      <div ref={scrollRef} className="scrollbar-hide h-full overflow-y-auto">
+      <div ref={scrollRef} className="scrollbar-hide h-full overflow-y-auto z-10">
         {messages.map((msg, index) => (
           <ChatBubble key={`${String(msg.chatId)}-${index}`} {...msg} />
         ))}
