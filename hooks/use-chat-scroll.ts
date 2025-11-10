@@ -1,7 +1,7 @@
 import { DependencyList, useEffect, useRef, useState } from "react";
 
 type ChatScrollProps = {
-  chatRef: React.RefObject<HTMLDivElement | null>;
+  chatRef?: React.RefObject<HTMLDivElement | null>;
   bottomRef: React.RefObject<HTMLDivElement | null>;
   shouldLoadMore: boolean;
   loadMore: () => void;
@@ -22,7 +22,7 @@ export const useChatScroll = ({
 
   // Handle infinite scroll (load more when top reached)
   useEffect(() => {
-    const container = chatRef.current;
+    const container = chatRef?.current;
     if (!container) return;
 
     const handleScroll = () => {
@@ -47,7 +47,7 @@ export const useChatScroll = ({
   // Auto-scroll when new messages appear
   useEffect(() => {
     const bottomDiv = bottomRef.current;
-    const container = chatRef.current;
+    const container = chatRef?.current;
     const shouldAutoScroll = () => {
       if (!initialized && bottomDiv) {
         setInitialized(true);

@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 
-import { Float, Html, Text, useGLTF } from "@react-three/drei";
-import { extend, useFrame } from "@react-three/fiber";
+import { Float, Html, RoundedBoxGeometry, useGLTF } from "@react-three/drei";
+import { extend, ObjectMap } from "@react-three/fiber";
 import { RoundedPlaneGeometry } from "maath/geometry";
-import { Color, ColorRepresentation, Group, MeshStandardMaterial } from "three";
+import { Color, ColorRepresentation, Mesh, MeshStandardMaterial } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
 import Overlay from "./shared-scene-components/overlay";
+import { GLTF } from "three-stdlib";
 
 // Extend RoundedPlaneGeometry to Fiber
 extend({ RoundedPlaneGeometry });
@@ -20,38 +21,43 @@ export type SceneWidget = {
 export type SceneProps = {
   widgets?: SceneWidget[];
   sceneRotation?: number;
-  dashboard: boolean;
   color: ColorRepresentation;
 };
-
-extend({ RoundedPlaneGeometry });
-
-const useSceneSetup = (scene: any, color: any) => {
+/**
+ * 
+ * @param scene 
+ * @param color 
+ */
+const useSceneSetup = (gltf?: GLTF & ObjectMap, color?: ColorRepresentation) => {
   useEffect(() => {
-    if (!scene) return;
-    scene.traverse((child: any) => {
-      if (child.isMesh) {
-        child.receiveShadow = true;
-        child.material = new MeshStandardMaterial({
-          map: child.material.map,
-          color: color || child.material.color,
+    console.log(gltf?.scene)
+    if (!gltf) return;
+    gltf.scene?.traverse?.((child) => {
+      console.log({ child })
+      const mesh = child as Mesh;
+      if (mesh.isMesh) {
+        mesh.receiveShadow = true;
+        const material = mesh.material as MeshStandardMaterial;
+        mesh.material = new MeshStandardMaterial({
+          map: material.map,
+          color: color || material.color,
           roughness: 1,
           metalness: 0,
           emissiveIntensity: 10,
-          side: child.material.side,
+          side: material.side,
         });
       }
     });
-  }, [scene, color]);
+  }, [gltf, color]);
 };
 
 // === Main Component ===
 const Scene: React.FC<SceneProps> = ({
   widgets = [],
-  sceneRotation = degToRad(50),
   color,
 }) => {
-  const gltf = useGLTF("/models/zen.glb"); // Example 3D model path
+  const gltf = useGLTF("/models/zen.glb");
+  const drone = useGLTF('/models/quadrocopter_drone.glb');
 
   const memoizedBackgroundColor = useMemo(() => new Color(color), [color]);
 
@@ -59,9 +65,38 @@ const Scene: React.FC<SceneProps> = ({
 
   return (
     <group>
+      <Float floatIntensity={5} rotationIntensity={2} position-z={-1} position-x={-3} position-y={2}>
+        <group scale={0.3}>
+          <primitive object={drone.scene} />
+        </group>
+      </Float>
       {/* === Base 3D Model === */}
 
-      <primitive object={gltf} rotation-y={sceneRotation} />
+      <Html
+        castShadow
+        receiveShadow
+        occlude="blending"
+        position-y={1.3}
+        position-z={-0.4}
+        transform
+        scale={0.101}
+        className="p-0 m-0"
+        geometry={<RoundedBoxGeometry args={[4, 2.225, 0.06]} />}
+
+      >
+        <div className="overflow-hidden bg-transparent p-0">
+          <iframe
+            allowFullScreen
+            width={1600}
+            height={900}
+            src={"https://www.youtube.com/embed/7j_NE6Pjv-E?si=R6_1zzCKdUwHcA69"}
+          />
+
+        </div>
+
+      </Html>
+
+      <primitive object={gltf.scene} rotation-y={degToRad(50)} />
 
       <Overlay backgroundColor={memoizedBackgroundColor} />
     </group>
@@ -71,3 +106,4 @@ const Scene: React.FC<SceneProps> = ({
 export default Scene;
 
 useGLTF.preload("/models/zen.glb");
+useGLTF.preload("/models/quadrocopter_drone.glb");

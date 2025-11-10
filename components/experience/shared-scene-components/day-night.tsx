@@ -1,14 +1,14 @@
 import React, { useMemo, useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
-import { BackSide, Color, Vector2 } from "three";
+import { BackSide, Color, Material, Vector2 } from "three";
 
 interface DayNightSceneProps {
   backgroundColor: Color;
 }
 
 const DayNightScene: React.FC<DayNightSceneProps> = ({ backgroundColor }) => {
-  const materialRef = useRef<any>(null);
+  const materialRef = useRef<Material>(null);
 
   // Enhanced aviation-based time schemes with research-backed hex values
   const gradientColors = useMemo(() => {

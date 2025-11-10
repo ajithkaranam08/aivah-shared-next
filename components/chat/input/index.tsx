@@ -5,6 +5,7 @@ import {
   ArrowUpIcon,
   AudioLinesIcon,
   CheckIcon,
+  MessageCircleIcon,
   MicIcon,
   XIcon,
 } from "lucide-react";
@@ -29,8 +30,12 @@ import VoiceInput from "./voice-wave";
 
 const ChatInput = ({
   handleScrollBottom,
+  showChat,
+  setShowChat,
 }: {
   handleScrollBottom: () => void;
+  showChat?: boolean;
+  setShowChat?: () => void;
 }) => {
   const {
     setVoiceModalOpen,
@@ -164,14 +169,22 @@ const ChatInput = ({
                   <TooltipInput tooltipText="Stop" onClick={() => stopChat()}>
                     <div className="bg-accent size-3" />
                   </TooltipInput>
-                ) : (
+                ) : showChat ?
                   <TooltipInput
                     tooltipText="Audio options"
-                    onClick={() => setVoiceModalOpen(!voiceModalOpen)}
+                    onClick={() => setShowChat?.()}
                   >
-                    <AudioLinesIcon size={18} />
-                  </TooltipInput>
-                )}
+                    <MessageCircleIcon size={18} />
+                  </TooltipInput> :
+                  (
+
+                    <TooltipInput
+                      tooltipText="Audio options"
+                      onClick={() => setVoiceModalOpen(!voiceModalOpen)}
+                    >
+                      <AudioLinesIcon size={18} />
+                    </TooltipInput>
+                  )}
               </>
             )}
           </div>

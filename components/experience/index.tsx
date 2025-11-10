@@ -12,6 +12,7 @@ import Avatar from "./avater";
 import CameraRig from "./shared-scene-components/camera-rig";
 import EnvironmentLightSetup from "./shared-scene-components/shared-scene-components";
 import { Standard } from "./standard";
+import Scene from "./presentation";
 
 export type SceneWidget = {
   type: "iframe" | "image" | "video" | "attachment" | "youtubeurl";
@@ -32,12 +33,12 @@ export type ExperienceProps = {
   chatId?: number;
   focus?: "face" | "body";
   scene?:
-    | "videowall"
-    | "empty"
-    | "zen"
-    | "webresults"
-    | "presentation"
-    | "presentation2";
+  | "videowall"
+  | "empty"
+  | "zen"
+  | "webresults"
+  | "presentation"
+  | "presentation2";
   color?: string;
   widgets?: SceneWidget[];
   companionType?: string;
@@ -76,7 +77,7 @@ const AVATAR_PLACEMENT: Record<
     rotation: [0, 0, 0],
   },
   presentation: {
-    position: [0, 0, 0],
+    position: [-2, 0, 0],
     rotation: [0, degToRad(27), 0],
   },
   presentation2: {
@@ -100,7 +101,7 @@ const Experience = ({
   return (
     <div className="flex-center relative size-full">
       <Suspense fallback={null}>
-        <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 z-1 flex items-center justify-center">
           <Skeleton className="size-full" />
         </div>
       </Suspense>
@@ -110,7 +111,7 @@ const Experience = ({
           position: [0, 10, 10],
           fov: 70,
         }}
-        className="z-10 h-full w-full"
+        className="h-full w-full"
         dpr={[1, 1.5]}
       >
         <color
@@ -127,7 +128,7 @@ const Experience = ({
         <CameraRig>
           <Standard color={color} />
 
-          {/* <Scene color={color} dashboard /> */}
+          <Scene color={color} />
           <group
             position={avatarPlacement.position}
             rotation={avatarPlacement.rotation}
@@ -217,12 +218,12 @@ export default Experience;
 interface CameraHandlerProps {
   focus?: "face" | "body";
   scene?:
-    | "videowall"
-    | "empty"
-    | "zen"
-    | "webresults"
-    | "presentation"
-    | "presentation2";
+  | "videowall"
+  | "empty"
+  | "zen"
+  | "webresults"
+  | "presentation"
+  | "presentation2";
   companionType?: string;
 }
 

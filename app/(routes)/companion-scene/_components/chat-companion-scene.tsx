@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ChatInput from "@/components/chat/input";
 import { SESSION_CONVERSATION_ID } from "@/helper/storage";
@@ -11,6 +11,8 @@ import { useAudioTrack } from "@/services/conversation/query";
 import { useLivekitStore } from "@/store/livekit";
 import { ChatbotDetails } from "@/types/validation";
 
+import { Activity } from "react"
+
 import MessageCompanionScene from "./message-companion-scene";
 
 interface ChatCompanionSceneProps {
@@ -18,7 +20,10 @@ interface ChatCompanionSceneProps {
 }
 
 const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const { connect, room, disconnect } = useLivekitStore();
+
+  const [showChat, setShowChat] = useState(false);
 
   const { mutate: initConversation, isSuccess } = useConversationMutation();
   const { mutate: getChats } = useGetChatsMutation();
@@ -26,13 +31,13 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
   useAudioTrack(room);
 
   useEffect(() => {
-    initConversation(undefined, {
+    initConversation(sessionData, {
       onSuccess: () => {
         if (sessionData) connect(sessionData);
       },
     });
     return () => disconnect();
-  }, [sessionData, initConversation, connect, disconnect]);
+  }, [sessionData]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -41,14 +46,25 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
     }
   }, [isSuccess, getChats]);
 
+  const handleBottom = () => {
+    scrollRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }
+
   return (
     <div className="grid h-full grid-cols-3 gap-5 p-5">
       <div className="col-span-1" />
       <section className="col-span-1 flex items-end">
-        <ChatInput handleScrollBottom={() => {}} />
+        <ChatInput
+          handleScrollBottom={handleBottom}
+          setShowChat={() => setShowChat(!showChat)}
+          showChat
+        />
       </section>
       <section className="flex-center col-span-1">
-        <MessageCompanionScene room={room} />
+        <Activity mode={showChat ? "visible" : "hidden"}>
+          <MessageCompanionScene room={room} scrollRef={scrollRef} />
+        </Activity>
+
       </section>
     </div>
   );

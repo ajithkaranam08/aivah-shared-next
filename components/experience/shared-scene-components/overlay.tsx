@@ -139,8 +139,8 @@ export default function Overlay({ backgroundColor }: OverlayProps) {
 
   return (
     <mesh>
-      <planeGeometry args={[2, 2]} />
-      {/* @ts-ignore because JSX intrinsic type is dynamically extended */}
+      {/* <planeGeometry args={[2, 2]} /> */}
+      {/* @ts-expect-error because JSX intrinsic type is dynamically extended */}
       <overlayMaterial
         ref={materialRef}
         depthTest={false}

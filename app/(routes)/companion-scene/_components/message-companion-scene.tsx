@@ -10,10 +10,10 @@ import useConversationStore from "@/store/conversation";
 
 type MessageCompanionSceneProps = {
   room: Room | null;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
 };
 
-const MessageCompanionScene = ({ room }: MessageCompanionSceneProps) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+const MessageCompanionScene = ({ room, scrollRef }: MessageCompanionSceneProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const messages = useConversationStore((s) => s.messages);

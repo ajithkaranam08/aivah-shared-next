@@ -71,13 +71,13 @@ export const Standard = memo(({ color }: { color: ColorRepresentation }) => {
       </mesh>
 
       {/* Background Cylinder */}
-      <Cylinder
+      {/* <Cylinder
         args={[10, 10, 28, 32, 32, true, 1, Math.PI + 2.5]}
         position={[0, 5, -1]}
         rotation={[0, Math.PI / 2 - 1.5, 0]}
       >
         <DayNightScene backgroundColor={baseColor} />
-      </Cylinder>
+      </Cylinder> */}
 
       {/* Sparkle Particles */}
       <Sparkles
@@ -92,7 +92,7 @@ export const Standard = memo(({ color }: { color: ColorRepresentation }) => {
       />
 
       {/* UI Overlay */}
-      <Overlay backgroundColor={lightColor} />
+      {/* <Overlay backgroundColor={lightColor} /> */}
     </group>
   );
 });
