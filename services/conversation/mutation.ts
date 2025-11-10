@@ -2,12 +2,17 @@ import { useMutation } from "@tanstack/react-query";
 import { Room } from "livekit-client";
 import { v4 as uuidV4 } from "uuid";
 
-import { SESSION_CONVERSATION_ID, SESSION_ID } from "@/helper/storage";
+import {
+  SESSION_CONVERSATION_ID,
+  SESSION_ID,
+  SESSION_UUID,
+} from "@/helper/storage";
 import { ipAddress } from "@/lib/utils";
 import { useCompanionStore } from "@/store/companion";
 import useConversationStore from "@/store/conversation";
 import { ApiRequestPageParams, ApiResponseWithChat } from "@/types/api";
 import { ChatMessage } from "@/types/chat";
+import { ChatbotDetails } from "@/types/validation";
 
 import conversationAPi, { ConversationApiProps } from "./api";
 
@@ -19,12 +24,17 @@ type Conversation = {
 
 export const useConversationMutation = () => {
   const { setConfigureConversation } = useCompanionStore();
-  return useMutation<Conversation, Error>({
-    mutationFn: async () => {
+  return useMutation<Conversation, Error, ChatbotDetails>({
+    mutationFn: async (sessionData) => {
       const conversationId = SESSION_CONVERSATION_ID.get();
       const sessionId = SESSION_ID.get();
+      const sessionUuid = SESSION_UUID.get();
 
-      if (!conversationId || !sessionId) {
+      if (
+        !conversationId ||
+        !sessionId ||
+        sessionData.details.uuid !== sessionUuid
+      ) {
         const getIp = await ipAddress();
         const uuid = uuidV4();
         const response = await conversationAPi.create({
@@ -43,10 +53,11 @@ export const useConversationMutation = () => {
         };
       }
     },
-    onSuccess: (data) => {
+    onSuccess: (data, sessionData) => {
       if (data && data.conversationId) {
         SESSION_CONVERSATION_ID.set(String(data.conversationId));
         SESSION_ID.set(String(data.userSessionId));
+        SESSION_UUID.set(String(sessionData.details.uuid));
       }
     },
   });

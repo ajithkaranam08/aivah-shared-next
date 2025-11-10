@@ -33,9 +33,10 @@ const ChatCompanion = ({ sessionData }: ChatCompanionProps) => {
   } = useGetChatsMutation();
 
   useAudioTrack(room);
+  
 
   useEffect(() => {
-    initConversation(undefined, {
+    initConversation(sessionData, {
       onSuccess: () => {
         if (sessionData) connect(sessionData);
       },

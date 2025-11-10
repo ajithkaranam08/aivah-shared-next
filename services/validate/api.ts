@@ -5,7 +5,6 @@ const validateApi = {
   uuid: (id: string, params?: object, options?: ConnectOptions) => {
     const queryParams = new URLSearchParams();
 
-    console.log(params);
 
     Object.entries(params || {}).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {

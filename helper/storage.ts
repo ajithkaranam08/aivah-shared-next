@@ -42,3 +42,18 @@ export const SESSION_ID = {
     sessionStorage.removeItem("session_id");
   },
 };
+
+export const SESSION_UUID = {
+  get: () => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("session_uuid");
+  },
+  set: (id: string) => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("session_uuid", id);
+  },
+  clear: () => {
+    if (typeof window === "undefined") return;
+    sessionStorage.removeItem("session_uuid");
+  },
+};

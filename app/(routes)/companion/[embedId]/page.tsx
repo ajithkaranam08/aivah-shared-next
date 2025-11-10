@@ -16,11 +16,14 @@ import {
   SESSION_CONVERSATION_ID,
   SESSION_ID,
   SESSION_TOKEN,
+  SESSION_UUID,
 } from "@/helper/storage";
 import useResize from "@/hooks/use-resize";
 import { useValidateUUID } from "@/services/validate/query";
 
 import ChatCompanion from "../_components/chat-companion";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 type Info = {
   directionType: "horizontal" | "vertical";
@@ -31,8 +34,18 @@ const CompanionEmbedId = () => {
   const { width } = useResize();
   const router = useRouter();
   const { embedId } = useParams();
+  const queryClient = useQueryClient();
 
-  const { data } = useValidateUUID(String(embedId));
+  
+
+  const { data, isSuccess } = useValidateUUID(String(embedId));
+
+  useEffect(() => {
+    const token = SESSION_TOKEN.get();
+    if (!token && isSuccess) {
+      SESSION_TOKEN.set(data.details.token);
+    }
+  }, [router, isSuccess, data]);
 
   const isTablet = width <= 768;
 
@@ -45,6 +58,8 @@ const CompanionEmbedId = () => {
     SESSION_CONVERSATION_ID.clear();
     SESSION_ID.clear();
     SESSION_TOKEN.clear();
+    SESSION_UUID.clear();
+    queryClient.clear();
     router.refresh();
   };
 

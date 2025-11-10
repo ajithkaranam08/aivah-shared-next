@@ -1,7 +1,7 @@
 // src/store/useAvatarStore.ts
 import { create } from "zustand";
 
-interface AvatarState {
+interface AvatarStateProps {
   currentAnimation: string;
   facialExpression: string;
   isWalking: boolean;
@@ -15,14 +15,19 @@ interface AvatarState {
   setCurrentFacialExpression: (
     expression: "Focused" | "Happy" | "Sad" | "Angry" | "Neutral"
   ) => void;
+  reset: () => void;
 }
 
-export const useAvatarStore = create<AvatarState>((set) => ({
+const avatarStoreInit = {
   currentAnimation: "Idle0",
   facialExpression: "Neutral",
   isWalking: false,
-  position: [0, 0, 0],
-  currentFacialExpression: "Neutral",
+  position: [0, 0, 0] as [number, number, number],
+  currentFacialExpression: "Neutral" as const,
+};
+
+export const useAvatarStore = create<AvatarStateProps>((set) => ({
+  ...avatarStoreInit,
 
   setCurrentAnimation: (anim) => set({ currentAnimation: anim }),
   setFacialExpression: (expr) => set({ facialExpression: expr }),
@@ -30,4 +35,5 @@ export const useAvatarStore = create<AvatarState>((set) => ({
   setPosition: (pos) => set({ position: pos }),
   setCurrentFacialExpression: (expression) =>
     set({ currentFacialExpression: expression }),
+  reset: () => set(avatarStoreInit),
 }));
