@@ -1,11 +1,8 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-import validateApi from "./api";
+import { validateKeys } from "@/helper/query-keys";
 
-export const validateKeys = {
-  all: ["validate"] as const,
-  validateuuid: (id: string, params?: object) => ["uuid", id, params] as const,
-};
+import validateApi from "./api";
 
 export const validateQueryOptions = (
   id: string,

@@ -114,7 +114,6 @@ export const useCreateChatMutation = (room: Room | null) => {
       return true;
     },
     onSuccess: (_, values) => {
-      console.log({ values, room });
       if (room) {
         setMessages(values);
       }

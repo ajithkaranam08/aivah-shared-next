@@ -2,12 +2,10 @@ import React from "react";
 
 import {
   HydrationBoundary,
-  QueryClient,
-  dehydrate,
 } from "@tanstack/react-query";
 
 import Container from "@/components/ui/container";
-import { validateQueryOptions } from "@/services/validate/query";
+import { initLayoutEmbed } from "@/actions/init-layout-embed";
 
 type Props = {
   children: React.ReactNode;
@@ -16,10 +14,7 @@ type Props = {
 
 const Companionlayout = async ({ children, params }: Props) => {
   const { embedId } = await params;
-
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(validateQueryOptions(embedId));
-  const dehydratedState = dehydrate(queryClient);
+  const dehydratedState = await initLayoutEmbed(embedId);
 
   return (
     <Container className="h-full p-2 lg:p-20">

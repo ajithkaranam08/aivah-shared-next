@@ -8,7 +8,7 @@ import {
   useGetChatsMutation,
 } from "@/services/conversation/mutation";
 import { useAudioTrack } from "@/services/conversation/query";
-import { useValidateUUID } from "@/services/validate/query";
+import { useValidateUUID } from "@/services/validate/server-query";
 import { useLivekitStore } from "@/store/livekit";
 
 import ChatMessage from "./message";

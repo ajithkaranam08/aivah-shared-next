@@ -19,12 +19,13 @@ import {
   SESSION_UUID,
 } from "@/helper/storage";
 import useResize from "@/hooks/use-resize";
-import { useValidateUUID } from "@/services/validate/query";
+import { useValidateUUID } from "@/services/validate/server-query";
 
 import ChatCompanion from "../_components/chat-companion";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useConversationStore from "@/store/conversation";
+import { useAvatarById } from "@/services/avatar/server-query";
 
 type Info = {
   directionType: "horizontal" | "vertical";
@@ -42,6 +43,9 @@ const CompanionEmbedId = () => {
 
 
   const { data, isSuccess } = useValidateUUID(String(embedId));
+
+  const avatar = useAvatarById(data.details.avatarId, data.details.token);
+  const avatarInfo = avatar.data.data;
 
   useEffect(() => {
     const token = SESSION_TOKEN.get();
@@ -78,10 +82,10 @@ const CompanionEmbedId = () => {
             {data.details?.avatarUrl ? (
               <>
                 <Experience
-                  modelUrl={data.details?.avatarUrl}
-                  chatId={data.details?.chatbotId}
-                  companionType={data.details?.avatarType}
-                  scene="empty"
+                  modelUrl={data.details.avatarUrl}
+                  color={avatarInfo.avtarBackground}
+                  companionType={avatarInfo.avatarType}
+                  scene={'empty'}
                 />
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-center gap-3 opacity-25 group-hover:opacity-100">
                   <ModeToggleBtn />

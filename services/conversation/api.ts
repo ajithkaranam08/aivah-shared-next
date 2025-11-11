@@ -35,8 +35,11 @@ const conversationAPi = {
       body,
       options
     ),
-  knowledgeBase: () =>
-    apiFetch.get<KnowledgeBaseApiResponse>(`embed-share/knowledge-base`),
+  knowledgeBase: (options?: ConnectOptions) =>
+    apiFetch.get<KnowledgeBaseApiResponse>(
+      `embed-share/knowledge-base`,
+      options
+    ),
   syncChat: (
     body: ConversationApiProps["syncChat"],
     options?: ConnectOptions
