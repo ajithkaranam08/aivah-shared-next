@@ -103,13 +103,14 @@ const ChatBubble = ({
               sender === "user" ? "flex" : "flex-row-reverse"
             )}
           >
-            <span className="text-muted-foreground text-xs">
+            <span className="text-muted-foreground text-xs in-[.force-child-white]:text-white">
               {formattedTime}
             </span>
             <TooltipInput
               tooltipText={copiedKey ? "Copied!" : "Copy"}
               variant="ghost"
               onClick={() => copy(content || "")}
+              className="in-[.force-child-white]:text-white"
             >
               {copiedKey ? <CopyCheck size={18} /> : <CopyIcon size={18} />}
             </TooltipInput>

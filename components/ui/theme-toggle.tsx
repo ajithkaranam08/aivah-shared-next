@@ -3,10 +3,13 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import useMount from "@/hooks/use-mount";
+import { VariantProps } from "class-variance-authority";
 
-export function ModeToggleBtn() {
+type ModeToggleBtnProps = React.ComponentProps<"button"> & VariantProps<typeof buttonVariants>;
+
+export function ModeToggleBtn(props: ModeToggleBtnProps) {
   const isMounted = useMount();
   const { setTheme, theme } = useTheme();
 
@@ -15,6 +18,7 @@ export function ModeToggleBtn() {
       variant="outline"
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      {...props}
     >
       {isMounted && theme === "dark" ? (
         <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />

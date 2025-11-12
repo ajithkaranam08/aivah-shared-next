@@ -9,7 +9,7 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import { Skeleton } from "../ui/skeleton";
 import Avatar from "./avater";
 import CameraRig from "./shared-scene-components/camera-rig";
-import EnvironmentLightSetup from "./shared-scene-components/shared-scene-components";
+import EnvironmentLightSetup from "./shared-scene-components/environment-light-setup";
 import { Standard } from "./standard";
 import PresentationScene from "./presentation";
 

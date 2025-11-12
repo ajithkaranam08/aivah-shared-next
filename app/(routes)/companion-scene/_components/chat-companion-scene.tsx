@@ -15,6 +15,9 @@ import { Activity } from "react"
 
 import MessageCompanionScene from "./message-companion-scene";
 import useConversationStore from "@/store/conversation";
+import { MessageCircleIcon, MessageCircleOffIcon, MessageSquareIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ModeToggleBtn } from "@/components/ui/theme-toggle";
 
 interface ChatCompanionSceneProps {
   sessionData: ChatbotDetails;
@@ -58,21 +61,27 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
   }
 
   return (
-    <div className="grid h-full grid-cols-3 gap-5 p-5">
-      <div className="col-span-1" />
-      <section className="col-span-1 flex items-end">
+    <div className="grid h-full grid-cols-4 gap-5 p-5">
+      <div className="col-span-1" >
+        <div className="z-10 relative flex flex-col gap-2">
+          <Button size={"icon-lg"} onClick={() => setShowChat(!showChat)} className=" cursor-pointer" variant={"secondary"}>
+            {showChat ? <MessageCircleOffIcon /> : <MessageCircleIcon />}
+
+          </Button>
+          <ModeToggleBtn variant={"secondary"} size={"icon-lg"} />
+        </div>
+
+      </div>
+      <section className="col-span-2 flex items-end">
         <ChatInput
           className="z-10"
           handleScrollBottom={handleBottom}
-          setShowChat={() => setShowChat(!showChat)}
-          showChat
         />
       </section>
       <section className="flex-center col-span-1">
         <Activity mode={showChat ? "visible" : "hidden"} >
           <MessageCompanionScene room={room} scrollRef={scrollRef} />
         </Activity>
-
       </section>
     </div>
   );

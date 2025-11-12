@@ -30,8 +30,6 @@ import VoiceInput from "./voice-wave";
 
 const ChatInput = ({
   handleScrollBottom,
-  showChat,
-  setShowChat,
   className
 }: {
   handleScrollBottom: () => void;
@@ -171,22 +169,14 @@ const ChatInput = ({
                   <TooltipInput tooltipText="Stop" onClick={() => stopChat()}>
                     <div className="bg-accent size-3" />
                   </TooltipInput>
-                ) : showChat ?
+                ) : (
                   <TooltipInput
                     tooltipText="Audio options"
-                    onClick={() => setShowChat?.()}
+                    onClick={() => setVoiceModalOpen(!voiceModalOpen)}
                   >
-                    <MessageCircleIcon size={18} />
-                  </TooltipInput> :
-                  (
-
-                    <TooltipInput
-                      tooltipText="Audio options"
-                      onClick={() => setVoiceModalOpen(!voiceModalOpen)}
-                    >
-                      <AudioLinesIcon size={18} />
-                    </TooltipInput>
-                  )}
+                    <AudioLinesIcon size={18} />
+                  </TooltipInput>
+                )}
               </>
             )}
           </div>
