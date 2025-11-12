@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 
-import { Room } from "livekit-client";
 
 import ChatInitWithCredit from "@/components/chat/message/chat-Init-with-credit";
 import ChatBubble from "@/components/chat/message/chat-bubble";
@@ -9,11 +8,10 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 import useConversationStore from "@/store/conversation";
 
 type MessageCompanionSceneProps = {
-  room: Room | null;
   scrollRef: React.RefObject<HTMLDivElement | null>;
 };
 
-const MessageCompanionScene = ({ room, scrollRef }: MessageCompanionSceneProps) => {
+const MessageCompanionScene = ({ scrollRef }: MessageCompanionSceneProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const messages = useConversationStore((s) => s.messages);
@@ -34,8 +32,8 @@ const MessageCompanionScene = ({ room, scrollRef }: MessageCompanionSceneProps) 
         {messages.map((msg, index) => (
           <ChatBubble key={`${String(msg.chatId)}-${index}`} {...msg} />
         ))}
-        <GenerateChat room={room} />
-        <ChatInitWithCredit room={room} />
+        <GenerateChat />
+        <ChatInitWithCredit />
 
         <div ref={bottomRef} />
       </div>

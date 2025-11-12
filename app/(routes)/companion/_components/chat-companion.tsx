@@ -7,7 +7,7 @@ import {
   useConversationMutation,
   useGetChatsMutation,
 } from "@/services/conversation/mutation";
-import { useAudioTrack } from "@/services/conversation/query";
+import { useAudioTrack, useChatDateReceived, useChatTranscription } from "@/services/conversation/query";
 import { useLivekitStore } from "@/store/livekit";
 import { ChatbotDetails } from "@/types/validation";
 
@@ -33,6 +33,9 @@ const ChatCompanion = ({ sessionData }: ChatCompanionProps) => {
   } = useGetChatsMutation();
 
   useAudioTrack(room);
+  useChatTranscription(room);
+  useChatDateReceived(room);
+
 
 
   useEffect(() => {
@@ -61,7 +64,7 @@ const ChatCompanion = ({ sessionData }: ChatCompanionProps) => {
 
   return (
     <div className="relative flex h-full flex-col p-5">
-      <MessageCompanion room={room} />
+      <MessageCompanion />
       <VoiceModal />
     </div>
   );

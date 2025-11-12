@@ -14,11 +14,9 @@ import useConversationStore, {
   ConversationStoreProps,
 } from "@/store/conversation";
 
-type MessageCompanionProps = {
-  room: Room | null;
-};
 
-const MessageCompanion = ({ room }: MessageCompanionProps) => {
+
+const MessageCompanion = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -54,8 +52,8 @@ const MessageCompanion = ({ room }: MessageCompanionProps) => {
         {messages.map((msg, index) => (
           <ChatBubble key={`${String(msg.chatId)}-${index}`} {...msg} />
         ))}
-        <GenerateChat room={room} />
-        <ChatInitWithCredit room={room} />
+        <GenerateChat />
+        <ChatInitWithCredit />
 
         <div ref={bottomRef} />
       </div>

@@ -18,8 +18,16 @@ import { useLivekitStore } from "@/store/livekit";
 
 import { Button } from "../ui/button";
 import GlowingLinear from "../ui/glowing-circle";
+import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
-export default function VoiceModal() {
+interface VoiceModalProps {
+  glowingCircle?: boolean;
+  translate?: boolean;
+  className?: string;
+}
+
+export default function VoiceModal({ translate = true, glowingCircle = true, className }: VoiceModalProps) {
   const { theme } = useTheme();
   const { voiceModalOpen, setVoiceModalOpen, setIsRecording, isRecording } =
     useVoiceModalStore();
@@ -78,6 +86,7 @@ export default function VoiceModal() {
     isPending,
     isRecording,
   ]);
+
   return (
     <AnimatePresence>
       {voiceModalOpen && (
@@ -86,20 +95,23 @@ export default function VoiceModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-secondary absolute inset-0 flex flex-col items-center justify-center gap-5"
+          className={cn("bg-secondary absolute inset-0 flex flex-col items-center justify-center gap-5", className)}
         >
-          <section className="flex flex-1 items-center justify-center">
-            <GlowingLinear isActive={loadingType === "GENERATING"} />
-          </section>
+          {glowingCircle &&
+            <section className="flex flex-1 items-center justify-center">
+              <GlowingLinear isActive={loadingType === "GENERATING"} />
+            </section>
+          }
 
-          <motion.div
+          {translate ? <motion.div
             className="text-primary/80 max-h-18 flex-1 overflow-auto px-6 text-center text-lg [scrollbar-width:thin]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
             {transcription || liveText || finalText || "Start speaking..."}
-          </motion.div>
+          </motion.div> : <Badge>{transcription ? "Agent Speaking" : liveText ? "Listening" : "Start speaking"}</Badge>
 
+          }
           <div className="flex gap-5 py-5">
             <Button
               size="icon-lg"

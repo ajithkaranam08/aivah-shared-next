@@ -7,7 +7,7 @@ import {
   useConversationMutation,
   useGetChatsMutation,
 } from "@/services/conversation/mutation";
-import { useAudioTrack } from "@/services/conversation/query";
+import { useAudioTrack, useChatDateReceived, useChatTranscription } from "@/services/conversation/query";
 import { useLivekitStore } from "@/store/livekit";
 import { ChatbotDetails } from "@/types/validation";
 
@@ -15,9 +15,11 @@ import { Activity } from "react"
 
 import MessageCompanionScene from "./message-companion-scene";
 import useConversationStore from "@/store/conversation";
-import { MessageCircleIcon, MessageCircleOffIcon, MessageSquareIcon } from "lucide-react";
+import { MessageCircleIcon, MessageCircleOffIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggleBtn } from "@/components/ui/theme-toggle";
+import { useVoiceModalStore } from "@/store/companion";
+import VoiceModal from "@/components/chat/voice-modal";
 
 interface ChatCompanionSceneProps {
   sessionData: ChatbotDetails;
@@ -32,8 +34,13 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
   const { mutate: initConversation, isSuccess } = useConversationMutation();
   const { mutate: getChats } = useGetChatsMutation();
   const setGreeting = useConversationStore(state => state.setGreeting)
+  const voiceModalOpen = useVoiceModalStore(state => state.voiceModalOpen);
+  const showChatComp = !voiceModalOpen && showChat;
 
   useAudioTrack(room);
+  useChatTranscription(room);
+  useChatDateReceived(room);
+
 
   useEffect(() => {
     initConversation(sessionData, {
@@ -57,7 +64,10 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
   }, [isSuccess, getChats]);
 
   const handleBottom = () => {
-    scrollRef?.current?.scrollIntoView({ behavior: "smooth" });
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current?.scrollHeight,
+      behavior: "smooth",
+    });
   }
 
   return (
@@ -66,21 +76,24 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
         <div className="z-10 relative flex flex-col gap-2">
           <Button size={"icon-lg"} onClick={() => setShowChat(!showChat)} className=" cursor-pointer" variant={"secondary"}>
             {showChat ? <MessageCircleOffIcon /> : <MessageCircleIcon />}
-
           </Button>
           <ModeToggleBtn variant={"secondary"} size={"icon-lg"} />
         </div>
 
       </div>
-      <section className="col-span-2 flex items-end">
-        <ChatInput
-          className="z-10"
-          handleScrollBottom={handleBottom}
-        />
+      <section className="col-span-2 flex items-end px-10">
+        {!voiceModalOpen &&
+
+          <ChatInput
+            className="z-10"
+            handleScrollBottom={handleBottom}
+          />
+        }
+        <VoiceModal glowingCircle={false} translate={false} className="z-10 bg-transparent justify-end" />
       </section>
-      <section className="flex-center col-span-1">
-        <Activity mode={showChat ? "visible" : "hidden"} >
-          <MessageCompanionScene room={room} scrollRef={scrollRef} />
+      <section className="flex-center col-span-1 relative">
+        <Activity mode={showChatComp ? "visible" : "hidden"} >
+          <MessageCompanionScene scrollRef={scrollRef} />
         </Activity>
       </section>
     </div>

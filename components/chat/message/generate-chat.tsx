@@ -1,14 +1,10 @@
-import { Room } from "livekit-client";
 
-import { useChatTranscription } from "@/services/conversation/query";
 import useConversationStore from "@/store/conversation";
 import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
 
-const GenerateChat = ({ room }: { room: Room | null }) => {
+const GenerateChat = () => {
   const { transcription } = useConversationStore();
-
-  useChatTranscription(room);
 
   return transcription?.length ? (
     <div className={"group flex w-full justify-start bubble-last-before-child"}>

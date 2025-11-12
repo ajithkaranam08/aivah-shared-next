@@ -1,15 +1,14 @@
 import React from "react";
 
-import { Room } from "livekit-client";
 import { useShallow } from "zustand/shallow";
 
 import { LoaderFive, LoaderOne } from "@/components/ui/loader";
-import { useChatDateReceived } from "@/services/conversation/query";
+
 import useConversationStore, {
   ConversationStoreProps,
 } from "@/store/conversation";
 
-const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
+const ChatInitWithCredit = () => {
   const shallow = useShallow<
     ConversationStoreProps,
     Pick<ConversationStoreProps, "greeting">
@@ -17,7 +16,6 @@ const ChatInitWithCredit = ({ room }: { room: Room | null }) => {
     greeting: state.greeting,
   }));
   const { greeting } = useConversationStore(shallow);
-  useChatDateReceived(room);
 
   if (greeting.message === "INIT") {
     return (
