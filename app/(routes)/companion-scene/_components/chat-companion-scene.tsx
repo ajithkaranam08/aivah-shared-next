@@ -74,10 +74,10 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
     <div className="grid h-full grid-cols-4 gap-5 p-5">
       <div className="col-span-1" >
         <div className="z-10 relative flex flex-col gap-2">
-          <Button size={"icon-lg"} onClick={() => setShowChat(!showChat)} className=" cursor-pointer" variant={"secondary"}>
+          <Button size={"icon-lg"} onClick={() => setShowChat(!showChat)} className="cursor-pointer" variant={"outline"}>
             {showChat ? <MessageCircleOffIcon /> : <MessageCircleIcon />}
           </Button>
-          <ModeToggleBtn variant={"secondary"} size={"icon-lg"} />
+          <ModeToggleBtn variant={"outline"} size={"icon-lg"} className="cursor-pointer" />
         </div>
 
       </div>
@@ -89,12 +89,12 @@ const ChatCompanionScene = ({ sessionData }: ChatCompanionSceneProps) => {
             handleScrollBottom={handleBottom}
           />
         }
-        <VoiceModal glowingCircle={false} translate={false} className="z-10 bg-transparent justify-end" />
       </section>
       <section className="flex-center col-span-1 relative">
         <Activity mode={showChatComp ? "visible" : "hidden"} >
           <MessageCompanionScene scrollRef={scrollRef} />
         </Activity>
+        <VoiceModal glowingCircle={false} translate={false} className="z-10 bg-transparent justify-end" />
       </section>
     </div>
   );

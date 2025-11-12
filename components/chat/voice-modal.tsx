@@ -109,7 +109,7 @@ export default function VoiceModal({ translate = true, glowingCircle = true, cla
             animate={{ opacity: 1 }}
           >
             {transcription || liveText || finalText || "Start speaking..."}
-          </motion.div> : <Badge>{transcription ? "Agent Speaking" : liveText ? "Listening" : "Start speaking"}</Badge>
+          </motion.div> : <Badge variant={"secondary"}  className="bg-secondary/10 shadow-md backdrop-blur-md px-5 py-2">{transcription ? "Agent Speaking" : liveText ? "Listening" : "Start speaking"}</Badge>
 
           }
           <div className="flex gap-5 py-5">

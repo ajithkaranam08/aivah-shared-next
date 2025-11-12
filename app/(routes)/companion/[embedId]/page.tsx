@@ -88,7 +88,7 @@ const CompanionEmbedId = () => {
                   scene={'empty'}
                 />
                 <div className="absolute top-3 left-3 z-20 flex flex-col items-center gap-3 opacity-25 group-hover:opacity-100">
-                  <ModeToggleBtn />
+                  <ModeToggleBtn variant={"outline"}/>
 
                   <Button
                     variant="outline"

@@ -48,7 +48,7 @@ const MessageCompanion = () => {
 
   return (
     <>
-      <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto height-offet-companion">
         {messages.map((msg, index) => (
           <ChatBubble key={`${String(msg.chatId)}-${index}`} {...msg} />
         ))}

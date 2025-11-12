@@ -149,9 +149,19 @@ body {
   position: relative;
 }
 
-.bubble-last-before-child {
-  @apply nth-last-2:not-[.no-class]:min-h-[calc(-260px+100dvh)];
+.height-offet-companion {
+  --height-offset: -260px
 }
+
+.height-offet-companion-scene {
+  --height-offset: -5rem
+}
+
+
+.bubble-last-before-child {
+  @apply nth-last-2:min-h-[calc(var(--height-offset)+100dvh)];
+}
+
 
 @keyframes glow {
   0% {
