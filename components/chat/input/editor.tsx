@@ -16,7 +16,6 @@ const EditorInput = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const form = useFormContext<ChatFormType>();
 
-  console.log("EditorInput rendered", form.getValues("text"));
 
   const handleInput = (
     e: React.FormEvent<HTMLDivElement>,

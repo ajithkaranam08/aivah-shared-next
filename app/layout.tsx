@@ -5,6 +5,7 @@ import { Providers } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
+import "@/config/global-event"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
